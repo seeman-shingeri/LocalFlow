@@ -17,19 +17,22 @@ import {
   Edit,
   Clock,
   Sparkles,
-  Send,
-  Plus,
+  Archive,
+  RotateCcw,
 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { CommunicationChannel } from '@/types/database';
+import { CustomerFormModal } from './CustomerFormModal';
+import { AIDraftModal } from '@/components/ai/AIDraftModal';
 
 interface CustomerDetailDrawerProps {
   customerId: string | null;
   onClose: () => void;
-  onEdit: (customer: CustomerWithRelations) => void;
-  onDraftAI: (customer: CustomerWithRelations) => void;
+  onEdit?: (customer: CustomerWithRelations) => void;
+  onDraftAI?: (customer: CustomerWithRelations) => void;
+  onCustomerUpdated?: () => void;
 }
 
 export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
@@ -37,11 +40,16 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
   onClose,
   onEdit,
   onDraftAI,
+  onCustomerUpdated,
 }) => {
   const { currentWorkspace } = useWorkspace();
   const [data, setData] = useState<CustomerWithRelations | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'enquiries' | 'appointments' | 'invoices' | 'comms'>('overview');
+
+  // Self-contained Edit & AI Draft modals
+  const [internalEditOpen, setInternalEditOpen] = useState(false);
+  const [internalAiOpen, setInternalAiOpen] = useState(false);
 
   // Log message dialog
   const [logModalOpen, setLogModalOpen] = useState(false);
@@ -68,6 +76,18 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
 
   if (!customerId) return null;
 
+  const handleToggleArchive = async () => {
+    if (!data) return;
+    const nextStatus = data.status === 'archived' ? 'active' : 'archived';
+    try {
+      await customerService.update(data.id, { status: nextStatus });
+      await loadCustomer();
+      onCustomerUpdated?.();
+    } catch {
+      // ignore
+    }
+  };
+
   const handleLogCommunication = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentWorkspace || !data || !commContent.trim()) return;
@@ -83,6 +103,7 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
       setCommContent('');
       setLogModalOpen(false);
       await loadCustomer();
+      onCustomerUpdated?.();
     } catch {
       // ignore
     } finally {
@@ -124,10 +145,40 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
 
             <div className="flex items-center gap-2">
               {data && (
-                <Button variant="outline" size="sm" onClick={() => onEdit(data)}>
-                  <Edit className="w-3.5 h-3.5 mr-1" />
-                  Edit
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleToggleArchive}
+                    title={data.status === 'archived' ? 'Restore customer' : 'Archive customer'}
+                  >
+                    {data.status === 'archived' ? (
+                      <>
+                        <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                        Restore
+                      </>
+                    ) : (
+                      <>
+                        <Archive className="w-3.5 h-3.5 mr-1" />
+                        Archive
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (onEdit) {
+                        onEdit(data);
+                      } else {
+                        setInternalEditOpen(true);
+                      }
+                    }}
+                  >
+                    <Edit className="w-3.5 h-3.5 mr-1" />
+                    Edit
+                  </Button>
+                </>
               )}
               <button
                 onClick={onClose}
@@ -160,7 +211,14 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => data && onDraftAI(data)}
+                onClick={() => {
+                  if (!data) return;
+                  if (onDraftAI) {
+                    onDraftAI(data);
+                  } else {
+                    setInternalAiOpen(true);
+                  }
+                }}
                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
               >
                 <Sparkles className="w-3.5 h-3.5 mr-1.5" />
@@ -375,6 +433,26 @@ export const CustomerDetailDrawer: React.FC<CustomerDetailDrawerProps> = ({
           </div>
         </form>
       </Modal>
+
+      <CustomerFormModal
+        isOpen={internalEditOpen}
+        onClose={() => setInternalEditOpen(false)}
+        initialCustomer={data}
+        onSuccess={() => {
+          loadCustomer();
+          onCustomerUpdated?.();
+        }}
+      />
+
+      <AIDraftModal
+        isOpen={internalAiOpen}
+        onClose={() => {
+          setInternalAiOpen(false);
+          loadCustomer();
+          onCustomerUpdated?.();
+        }}
+        customer={data}
+      />
     </>
   );
 };

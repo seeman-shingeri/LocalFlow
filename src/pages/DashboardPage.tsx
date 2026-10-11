@@ -295,10 +295,7 @@ export const DashboardPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={selectedCustomerId}
         onClose={() => setSelectedCustomerId(null)}
-        onEdit={() => {}}
-        onDraftAI={(c) => {
-          setAiDraftCustomer(c);
-        }}
+        onCustomerUpdated={() => loadDashboardData()}
       />
 
       {/* AI Draft Modal */}

@@ -289,8 +289,7 @@ export const EnquiriesPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={drawerCustomerId}
         onClose={() => setDrawerCustomerId(null)}
-        onEdit={() => {}}
-        onDraftAI={(c) => setAiCustomer(c)}
+        onCustomerUpdated={() => loadEnquiries()}
       />
 
       <AIDraftModal

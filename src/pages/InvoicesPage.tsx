@@ -189,8 +189,7 @@ export const InvoicesPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={drawerCustomerId}
         onClose={() => setDrawerCustomerId(null)}
-        onEdit={() => {}}
-        onDraftAI={() => {}}
+        onCustomerUpdated={() => loadInvoices()}
       />
 
       <ConfirmationModal

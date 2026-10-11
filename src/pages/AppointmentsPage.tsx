@@ -137,8 +137,7 @@ export const AppointmentsPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={drawerCustomerId}
         onClose={() => setDrawerCustomerId(null)}
-        onEdit={() => {}}
-        onDraftAI={() => {}}
+        onCustomerUpdated={() => loadAppointments()}
       />
 
       <ConfirmationModal

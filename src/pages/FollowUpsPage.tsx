@@ -194,8 +194,7 @@ export const FollowUpsPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={drawerCustomerId}
         onClose={() => setDrawerCustomerId(null)}
-        onEdit={() => {}}
-        onDraftAI={(c) => {}}
+        onCustomerUpdated={() => loadFollowUps()}
       />
 
       <ConfirmationModal

@@ -73,6 +73,16 @@ export const CustomersPage: React.FC = () => {
     }
   };
 
+  const handleToggleArchive = async (customer: Customer) => {
+    try {
+      const nextStatus = customer.status === 'archived' ? 'active' : 'archived';
+      await customerService.update(customer.id, { status: nextStatus });
+      loadCustomers();
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -242,6 +252,19 @@ export const CustomersPage: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => handleToggleArchive(c)}
+                        title={c.status === 'archived' ? 'Restore Customer' : 'Archive Customer'}
+                      >
+                        <Archive
+                          className={`w-3.5 h-3.5 ${
+                            c.status === 'archived' ? 'text-emerald-600' : 'text-amber-600'
+                          }`}
+                        />
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setDeleteCustomerTarget(c)}
                         title="Delete Customer"
                       >
@@ -270,14 +293,7 @@ export const CustomersPage: React.FC = () => {
       <CustomerDetailDrawer
         customerId={drawerCustomerId}
         onClose={() => setDrawerCustomerId(null)}
-        onEdit={(cust) => {
-          setDrawerCustomerId(null);
-          setEditingCustomer(cust);
-          setFormModalOpen(true);
-        }}
-        onDraftAI={(cust) => {
-          setAiDraftCustomer(cust);
-        }}
+        onCustomerUpdated={() => loadCustomers()}
       />
 
       <AIDraftModal
