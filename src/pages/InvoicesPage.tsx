@@ -61,11 +61,25 @@ export const InvoicesPage: React.FC = () => {
     }
   };
 
-  // Financial calculations across active invoices
-  const totalBilled = invoices.reduce((sum, i) => sum + (Number(i.total_amount) || 0), 0);
-  const totalCollected = invoices.reduce((sum, i) => sum + (Number(i.paid_amount) || 0), 0);
+  const handleStatusChange = async (id: string, status: Invoice['status']) => {
+    if (!currentWorkspace) return;
+    try {
+      await invoiceService.updateStatus(id, status, currentWorkspace.id);
+      loadInvoices();
+    } catch {
+      // ignore
+    }
+  };
+
+  // Financial calculations across active issued invoices (excluding cancelled and draft)
+  const totalBilled = invoices
+    .filter((i) => i.status !== 'cancelled' && i.status !== 'draft')
+    .reduce((sum, i) => sum + (Number(i.total_amount) || 0), 0);
+  const totalCollected = invoices
+    .filter((i) => i.status !== 'cancelled')
+    .reduce((sum, i) => sum + (Number(i.paid_amount) || 0), 0);
   const totalOutstanding = invoices
-    .filter((i) => i.status !== 'paid' && i.status !== 'cancelled')
+    .filter((i) => i.status !== 'paid' && i.status !== 'cancelled' && i.status !== 'draft')
     .reduce((sum, i) => sum + (Number(i.balance_due) || 0), 0);
 
   return (
@@ -99,6 +113,7 @@ export const InvoicesPage: React.FC = () => {
               <option value="paid">Fully Paid</option>
               <option value="overdue">Overdue</option>
               <option value="draft">Drafts</option>
+              <option value="cancelled">Cancelled</option>
             </select>
           </div>
 
@@ -145,6 +160,7 @@ export const InvoicesPage: React.FC = () => {
       <InvoiceList
         invoices={invoices}
         onRecordPayment={(inv) => setPaymentTargetInvoice(inv)}
+        onStatusChange={handleStatusChange}
         onViewPrint={(inv) => setPrintTargetInvoice(inv)}
         onDelete={(inv) => setDeleteTarget(inv)}
         onViewCustomer={(cid) => setDrawerCustomerId(cid)}

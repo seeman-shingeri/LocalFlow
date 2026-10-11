@@ -10,6 +10,7 @@ export interface CreateInvoiceInput {
   issue_date: string;
   due_date: string;
   tax_rate: number;
+  status?: 'draft' | 'sent';
   notes?: string;
   terms?: string;
   items: Array<{
@@ -43,10 +44,10 @@ export const invoiceService = {
       const customers = localDb.getCustomers(workspaceId);
       const payments = localDb.getPayments(workspaceId);
 
-      // Dynamically check and update overdue status for unpaid invoices past due date
+      // Dynamically transition 'sent' invoices past due date to 'overdue', preserving 'draft' and 'partial'
       invoices = invoices.map((inv) => {
         let currentStatus = inv.status;
-        if (currentStatus !== 'paid' && currentStatus !== 'cancelled' && isDateOverdue(inv.due_date)) {
+        if (currentStatus === 'sent' && isDateOverdue(inv.due_date)) {
           currentStatus = 'overdue';
         }
         return {
@@ -58,7 +59,13 @@ export const invoiceService = {
       });
 
       if (filter?.status && filter.status !== 'all') {
-        invoices = invoices.filter((i) => i.status === filter.status);
+        if (filter.status === 'overdue') {
+          invoices = invoices.filter(
+            (i) => i.status === 'overdue' || (i.status === 'partial' && isDateOverdue(i.due_date))
+          );
+        } else {
+          invoices = invoices.filter((i) => i.status === filter.status);
+        }
       }
       if (filter?.customerId) {
         invoices = invoices.filter((i) => i.customer_id === filter.customerId);
@@ -87,13 +94,19 @@ export const invoiceService = {
   async getNextInvoiceNumber(workspaceId: string): Promise<string> {
     const invoices = await this.getAll(workspaceId);
     const year = new Date().getFullYear();
-    const count = invoices.length + 1;
-    return `INV-${year}-${String(count).padStart(3, '0')}`;
+    const maxSeq = invoices.reduce((max, inv) => {
+      const match = inv.invoice_number.match(/-(\d+)$/);
+      const num = match ? parseInt(match[1], 10) : 0;
+      return num > max ? num : max;
+    }, 0);
+    const nextSeq = Math.max(invoices.length + 1, maxSeq + 1);
+    return `INV-${year}-${String(nextSeq).padStart(3, '0')}`;
   },
 
   async create(input: CreateInvoiceInput): Promise<Invoice> {
     const { subtotal, taxAmount, totalAmount } = calculateInvoiceTotals(input.items, input.tax_rate);
     const now = new Date().toISOString();
+    const initialStatus = input.status || 'sent';
 
     if (isSupabaseConfigured && supabase) {
       const { data: inv, error } = await supabase
@@ -110,7 +123,7 @@ export const invoiceService = {
           total_amount: totalAmount,
           paid_amount: 0.00,
           balance_due: totalAmount,
-          status: 'sent',
+          status: initialStatus,
           notes: input.notes || null,
           terms: input.terms || null,
           created_at: now,
@@ -157,7 +170,7 @@ export const invoiceService = {
         total_amount: totalAmount,
         paid_amount: 0.00,
         balance_due: totalAmount,
-        status: 'sent',
+        status: initialStatus,
         notes: input.notes || null,
         terms: input.terms || null,
         items: lineItems,

@@ -80,8 +80,7 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
     parseFloat(taxRate) || 0
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateInvoice = async (targetStatus: 'draft' | 'sent') => {
     if (!currentWorkspace) return;
 
     if (!customerId) {
@@ -90,6 +89,10 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
     }
     if (!invoiceNumber.trim()) {
       setError('Invoice number is required.');
+      return;
+    }
+    if (dueDate < issueDate) {
+      setError('Due date cannot be earlier than the issue date.');
       return;
     }
     if (items.length === 0 || items.some((i) => !i.description.trim())) {
@@ -108,6 +111,7 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
         issue_date: issueDate,
         due_date: dueDate,
         tax_rate: parseFloat(taxRate) || 0,
+        status: targetStatus,
         notes: notes.trim() || undefined,
         terms: terms.trim() || undefined,
         items: items.map((i) => ({
@@ -124,6 +128,11 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleCreateInvoice('sent');
   };
 
   return (
@@ -314,6 +323,15 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
           <Button variant="outline" size="sm" type="button" onClick={onClose} disabled={submitting}>
             Cancel
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            type="button"
+            onClick={() => handleCreateInvoice('draft')}
+            disabled={submitting}
+          >
+            Save as Draft
           </Button>
           <Button variant="primary" size="sm" type="submit" isLoading={submitting}>
             Create & Issue Invoice

@@ -3,7 +3,7 @@ import { enquiryService } from './enquiryService';
 import { invoiceService } from './invoiceService';
 import { customerService } from './customerService';
 import { Customer, FollowUp, Invoice, Enquiry } from '@/types/database';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, isDateOverdue } from '@/lib/utils';
 
 export interface AIResponse {
   answer: string;
@@ -87,9 +87,9 @@ export const aiService = {
     // 2. Outstanding Invoices query
     if (q.includes('invoice') || q.includes('outstanding') || q.includes('unpaid') || q.includes('owe') || q.includes('money')) {
       const invoices = await invoiceService.getAll(workspaceId);
-      const unpaid = invoices.filter((i) => i.status !== 'paid' && i.status !== 'cancelled');
+      const unpaid = invoices.filter((i) => i.status !== 'paid' && i.status !== 'cancelled' && i.status !== 'draft');
       const totalBalance = unpaid.reduce((sum, i) => sum + i.balance_due, 0);
-      const overdueList = unpaid.filter((i) => i.status === 'overdue');
+      const overdueList = unpaid.filter((i) => i.status === 'overdue' || isDateOverdue(i.due_date));
 
       const facts: string[] = [
         `Total unpaid invoices: ${unpaid.length}`,

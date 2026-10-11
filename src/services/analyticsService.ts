@@ -83,9 +83,9 @@ export const analyticsService = {
       (a) => a.status === 'scheduled' && isAfter(parseISO(a.start_time), now)
     ).length;
 
-    // 5. Invoices & Outstanding Receivables
+    // 5. Invoices & Outstanding Receivables (exclude paid, cancelled, and unissued drafts)
     const totalOutstandingInvoices = invoices
-      .filter((inv) => inv.status !== 'paid' && inv.status !== 'cancelled')
+      .filter((inv) => inv.status !== 'paid' && inv.status !== 'cancelled' && inv.status !== 'draft')
       .reduce((sum, inv) => sum + (Number(inv.balance_due) || 0), 0);
 
     // 6. Payments collected

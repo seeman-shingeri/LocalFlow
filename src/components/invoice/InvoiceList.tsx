@@ -3,12 +3,13 @@ import { Invoice } from '@/types/database';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { CreditCard, Printer, Trash2, User, Eye } from 'lucide-react';
+import { CreditCard, Printer, Trash2, User, Send, XCircle } from 'lucide-react';
 import { useWorkspace } from '@/context/WorkspaceContext';
 
 interface InvoiceListProps {
   invoices: Invoice[];
   onRecordPayment: (invoice: Invoice) => void;
+  onStatusChange?: (id: string, status: Invoice['status']) => void;
   onViewPrint: (invoice: Invoice) => void;
   onDelete: (invoice: Invoice) => void;
   onViewCustomer?: (customerId: string) => void;
@@ -17,6 +18,7 @@ interface InvoiceListProps {
 export const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
   onRecordPayment,
+  onStatusChange,
   onViewPrint,
   onDelete,
   onViewCustomer,
@@ -48,7 +50,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
         </thead>
         <tbody className="divide-y divide-slate-100">
           {invoices.map((inv) => {
-            const hasBalance = inv.balance_due > 0;
+            const hasBalance = inv.balance_due > 0 && inv.status !== 'cancelled';
 
             return (
               <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
@@ -84,7 +86,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                     hasBalance ? 'text-rose-600' : 'text-slate-400'
                   }`}
                 >
-                  {formatCurrency(inv.balance_due, currentWorkspace?.currency)}
+                  {formatCurrency(inv.status === 'cancelled' ? 0 : inv.balance_due, currentWorkspace?.currency)}
                 </td>
 
                 <td className="py-3 px-4 text-center">
@@ -96,6 +98,8 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                         ? 'warning'
                         : inv.status === 'overdue'
                         ? 'danger'
+                        : inv.status === 'sent'
+                        ? 'info'
                         : 'neutral'
                     }
                   >
@@ -105,7 +109,20 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
 
                 <td className="py-3 px-4 text-right">
                   <div className="flex items-center justify-end gap-1.5">
-                    {hasBalance && inv.status !== 'cancelled' && (
+                    {inv.status === 'draft' && onStatusChange && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onStatusChange(inv.id, 'sent')}
+                        className="h-7 text-xs text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+                        title="Issue draft invoice"
+                      >
+                        <Send className="w-3 h-3 mr-1" />
+                        Issue
+                      </Button>
+                    )}
+
+                    {hasBalance && inv.status !== 'draft' && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -115,6 +132,17 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                       >
                         <CreditCard className="w-3 h-3 mr-1" />
                         Record Pay
+                      </Button>
+                    )}
+
+                    {inv.status !== 'paid' && inv.status !== 'cancelled' && onStatusChange && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onStatusChange(inv.id, 'cancelled')}
+                        title="Cancel invoice"
+                      >
+                        <XCircle className="w-3.5 h-3.5 text-slate-400 hover:text-rose-600" />
                       </Button>
                     )}
 
