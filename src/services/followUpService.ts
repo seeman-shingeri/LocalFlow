@@ -218,6 +218,57 @@ export const followUpService = {
     }
   },
 
+  async update(id: string, updates: Partial<FollowUp>): Promise<FollowUp> {
+    const now = new Date().toISOString();
+    if (isSupabaseConfigured && supabase) {
+      const { customer, enquiry, ...cleanUpdates } = updates;
+      const { data, error } = await supabase
+        .from('follow_ups')
+        .update({
+          ...cleanUpdates,
+          updated_at: now,
+        })
+        .eq('id', id)
+        .select('*, customer:customers(*), enquiry:enquiries(*)')
+        .single();
+      if (error) throw error;
+
+      if (data?.customer_id && updates.due_date) {
+        await supabase
+          .from('customers')
+          .update({ next_follow_up_date: updates.due_date })
+          .eq('id', data.customer_id);
+      }
+      return data;
+    } else {
+      const all = localDb.getFollowUps();
+      const idx = all.findIndex((f) => f.id === id);
+      if (idx === -1) throw new Error('Follow-up not found');
+
+      const { customer: _c, enquiry: _e, ...cleanUpdates } = updates;
+      const updated: FollowUp = {
+        ...all[idx],
+        ...cleanUpdates,
+        updated_at: now,
+      };
+      all[idx] = updated;
+      localDb.saveFollowUps(all);
+
+      const customers = localDb.getCustomers();
+      if (updates.due_date) {
+        const cIdx = customers.findIndex((c) => c.id === updated.customer_id);
+        if (cIdx !== -1) {
+          customers[cIdx].next_follow_up_date = updates.due_date;
+          localDb.saveCustomers(customers);
+        }
+      }
+
+      const customer = customers.find((c) => c.id === updated.customer_id);
+      const enquiry = localDb.getEnquiries().find((e) => e.id === updated.enquiry_id);
+      return { ...updated, customer, enquiry };
+    }
+  },
+
   async delete(id: string, workspaceId: string): Promise<void> {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('follow_ups').delete().eq('id', id).eq('workspace_id', workspaceId);

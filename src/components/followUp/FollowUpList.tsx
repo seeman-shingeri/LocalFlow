@@ -13,12 +13,14 @@ import {
   RefreshCw,
   Trash2,
   User,
+  Edit,
 } from 'lucide-react';
 
 interface FollowUpListProps {
   followUps: FollowUp[];
   onComplete: (followUp: FollowUp) => void;
   onReschedule: (followUp: FollowUp) => void;
+  onEdit?: (followUp: FollowUp) => void;
   onDraftAI: (followUp: FollowUp) => void;
   onDelete: (followUp: FollowUp) => void;
   onViewCustomer?: (customerId: string) => void;
@@ -28,6 +30,7 @@ export const FollowUpList: React.FC<FollowUpListProps> = ({
   followUps,
   onComplete,
   onReschedule,
+  onEdit,
   onDraftAI,
   onDelete,
   onViewCustomer,
@@ -161,6 +164,17 @@ export const FollowUpList: React.FC<FollowUpListProps> = ({
                   <RefreshCw className="w-3.5 h-3.5 sm:mr-1" />
                   <span className="hidden sm:inline">Reschedule</span>
                 </Button>
+
+                {onEdit && (
+                  <button
+                    type="button"
+                    onClick={() => onEdit(item)}
+                    className="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-slate-100 transition-colors"
+                    title="Edit follow-up details"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                )}
 
                 <button
                   type="button"

@@ -98,7 +98,14 @@ export const FollowUpFormModal: React.FC<FollowUpFormModalProps> = ({
       const isoDueDate = new Date(dueDate).toISOString();
       let saved: FollowUp;
       if (initialFollowUp) {
-        saved = await followUpService.reschedule(initialFollowUp.id, isoDueDate, notes.trim());
+        saved = await followUpService.update(initialFollowUp.id, {
+          customer_id: customerId,
+          enquiry_id: enquiryId || null,
+          title: title.trim(),
+          due_date: isoDueDate,
+          priority,
+          notes: notes.trim() || null,
+        });
       } else {
         saved = await followUpService.create({
           workspace_id: currentWorkspace.id,

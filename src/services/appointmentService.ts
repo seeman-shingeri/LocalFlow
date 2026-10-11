@@ -107,6 +107,24 @@ export const appointmentService = {
     return this.update(id, { status });
   },
 
+  async checkConflict(
+    workspaceId: string,
+    startTime: string,
+    endTime: string,
+    excludeId?: string
+  ): Promise<Appointment[]> {
+    const scheduled = await this.getAll(workspaceId, { status: 'scheduled' });
+    const startMs = new Date(startTime).getTime();
+    const endMs = new Date(endTime).getTime();
+
+    return scheduled.filter((apt) => {
+      if (excludeId && apt.id === excludeId) return false;
+      const aptStart = new Date(apt.start_time).getTime();
+      const aptEnd = new Date(apt.end_time).getTime();
+      return startMs < aptEnd && endMs > aptStart;
+    });
+  },
+
   async delete(id: string, workspaceId: string): Promise<void> {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('appointments').delete().eq('id', id).eq('workspace_id', workspaceId);

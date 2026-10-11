@@ -24,6 +24,7 @@ export const FollowUpsPage: React.FC = () => {
 
   // Modals state
   const [formModalOpen, setFormModalOpen] = useState(false);
+  const [editingFollowUp, setEditingFollowUp] = useState<FollowUp | null>(null);
   const [rescheduleTarget, setRescheduleTarget] = useState<FollowUp | null>(null);
   const [aiDraftFollowUp, setAiDraftFollowUp] = useState<FollowUp | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<FollowUp | null>(null);
@@ -110,7 +111,14 @@ export const FollowUpsPage: React.FC = () => {
           </p>
         </div>
 
-        <Button variant="primary" size="sm" onClick={() => setFormModalOpen(true)}>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => {
+            setEditingFollowUp(null);
+            setFormModalOpen(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-1.5" /> Schedule Follow-up
         </Button>
       </div>
@@ -165,6 +173,10 @@ export const FollowUpsPage: React.FC = () => {
         followUps={getListForTab()}
         onComplete={handleComplete}
         onReschedule={(f) => setRescheduleTarget(f)}
+        onEdit={(f) => {
+          setEditingFollowUp(f);
+          setFormModalOpen(true);
+        }}
         onDraftAI={(f) => setAiDraftFollowUp(f)}
         onDelete={(f) => setDeleteTarget(f)}
         onViewCustomer={(cid) => setDrawerCustomerId(cid)}
@@ -173,8 +185,12 @@ export const FollowUpsPage: React.FC = () => {
       {/* Modals */}
       <FollowUpFormModal
         isOpen={formModalOpen}
-        onClose={() => setFormModalOpen(false)}
+        onClose={() => {
+          setFormModalOpen(false);
+          setEditingFollowUp(null);
+        }}
         onSuccess={() => loadFollowUps()}
+        initialFollowUp={editingFollowUp}
       />
 
       <RescheduleModal

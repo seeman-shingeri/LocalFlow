@@ -36,6 +36,7 @@ export const AppointmentFormModal: React.FC<AppointmentFormModalProps> = ({
   const [notes, setNotes] = useState('');
 
   const [error, setError] = useState<string | null>(null);
+  const [conflicts, setConflicts] = useState<Appointment[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,6 +49,24 @@ export const AppointmentFormModal: React.FC<AppointmentFormModalProps> = ({
       });
     }
   }, [currentWorkspace, isOpen, defaultCustomerId]);
+
+  useEffect(() => {
+    if (!currentWorkspace || !isOpen || !startTime || status !== 'scheduled') {
+      setConflicts([]);
+      return;
+    }
+    const dur = parseInt(durationMinutes, 10) || 60;
+    const start = new Date(startTime);
+    if (isNaN(start.getTime())) {
+      setConflicts([]);
+      return;
+    }
+    const end = addMinutes(start, dur);
+    appointmentService
+      .checkConflict(currentWorkspace.id, start.toISOString(), end.toISOString(), initialAppointment?.id)
+      .then(setConflicts)
+      .catch(() => setConflicts([]));
+  }, [currentWorkspace, isOpen, startTime, durationMinutes, status, initialAppointment]);
 
   useEffect(() => {
     if (initialAppointment) {
@@ -145,6 +164,16 @@ export const AppointmentFormModal: React.FC<AppointmentFormModalProps> = ({
         {error && (
           <div className="rounded-lg bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700 font-medium">
             {error}
+          </div>
+        )}
+
+        {conflicts.length > 0 && (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+            <p className="font-bold">Scheduling Conflict Warning:</p>
+            <p className="mt-0.5">
+              This time slot overlaps with {conflicts.length} existing scheduled appointment
+              {conflicts.length > 1 ? 's' : ''} ({conflicts.map((c) => c.title).join(', ')}).
+            </p>
           </div>
         )}
 
