@@ -121,7 +121,8 @@ describe('LocalFlow AI Service Layer & Business Workflows Integration', () => {
       expect(reloadedDraft?.status).toBe('draft');
 
       const metricsAfter = await analyticsService.getDashboardMetrics(WORKSPACE_ID);
-      expect(metricsAfter.outstandingInvoiceAmount).toBe(metricsBefore.outstandingInvoiceAmount);
+      expect(metricsBefore.totalOutstandingInvoices).toBeGreaterThan(0);
+      expect(metricsAfter.totalOutstandingInvoices).toBe(metricsBefore.totalOutstandingInvoices);
     });
 
     it('preserves partial payment status and updates balances accurately through full payment', async () => {
