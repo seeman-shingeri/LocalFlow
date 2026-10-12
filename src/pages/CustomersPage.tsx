@@ -5,7 +5,7 @@ import { useWorkspace } from '@/context/WorkspaceContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
-import { formatDate } from '@/lib/utils';
+import { formatDate, exportToCsv } from '@/lib/utils';
 import { CustomerFormModal } from '@/components/customer/CustomerFormModal';
 import { CustomerDetailDrawer } from '@/components/customer/CustomerDetailDrawer';
 import { AIDraftModal } from '@/components/ai/AIDraftModal';
@@ -22,6 +22,7 @@ import {
   Sparkles,
   Eye,
   Archive,
+  Download,
 } from 'lucide-react';
 
 export const CustomersPage: React.FC = () => {
@@ -83,6 +84,25 @@ export const CustomersPage: React.FC = () => {
     }
   };
 
+  const handleExportCsv = () => {
+    if (customers.length === 0) return;
+    exportToCsv(
+      `customers-${new Date().toISOString().slice(0, 10)}.csv`,
+      ['Name', 'Email', 'Phone', 'Address', 'Source', 'Status', 'Last Contact', 'Next Follow-Up', 'Notes'],
+      customers.map((c) => [
+        c.name,
+        c.email || '',
+        c.phone || '',
+        c.address || '',
+        c.source || '',
+        c.status,
+        c.last_contact_date ? formatDate(c.last_contact_date) : '',
+        c.next_follow_up_date ? formatDate(c.next_follow_up_date) : '',
+        c.notes || '',
+      ])
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -99,16 +119,27 @@ export const CustomersPage: React.FC = () => {
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            setEditingCustomer(null);
-            setFormModalOpen(true);
-          }}
-        >
-          <Plus className="w-4 h-4 mr-1.5" /> Add Customer
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCsv}
+            disabled={customers.length === 0}
+            title="Export filtered customers to CSV"
+          >
+            <Download className="w-4 h-4 mr-1.5" /> Export CSV
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              setEditingCustomer(null);
+              setFormModalOpen(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-1.5" /> Add Customer
+          </Button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

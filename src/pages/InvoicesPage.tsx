@@ -9,8 +9,8 @@ import { PrintableInvoiceModal } from '@/components/invoice/PrintableInvoiceModa
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { CustomerDetailDrawer } from '@/components/customer/CustomerDetailDrawer';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency } from '@/lib/utils';
-import { Receipt, Plus, Filter, DollarSign, Clock, CheckCircle2 } from 'lucide-react';
+import { formatCurrency, exportToCsv } from '@/lib/utils';
+import { Receipt, Plus, Filter, DollarSign, Clock, CheckCircle2, Download } from 'lucide-react';
 
 export const InvoicesPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
@@ -71,6 +71,37 @@ export const InvoicesPage: React.FC = () => {
     }
   };
 
+  const handleExportCsv = () => {
+    if (invoices.length === 0) return;
+    exportToCsv(
+      `invoices-${new Date().toISOString().slice(0, 10)}.csv`,
+      [
+        'Invoice Number',
+        'Customer',
+        'Status',
+        'Issue Date',
+        'Due Date',
+        'Subtotal',
+        'Tax Amount',
+        'Total Amount',
+        'Paid Amount',
+        'Balance Due',
+      ],
+      invoices.map((inv) => [
+        inv.invoice_number,
+        inv.customer?.name || '',
+        inv.status,
+        inv.issue_date,
+        inv.due_date,
+        inv.subtotal,
+        inv.tax_amount,
+        inv.total_amount,
+        inv.paid_amount,
+        inv.balance_due,
+      ])
+    );
+  };
+
   // Financial calculations across active issued invoices (excluding cancelled and draft)
   const totalBilled = invoices
     .filter((i) => i.status !== 'cancelled' && i.status !== 'draft')
@@ -98,7 +129,7 @@ export const InvoicesPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Status filter */}
           <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-2.5 py-1">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
@@ -116,6 +147,16 @@ export const InvoicesPage: React.FC = () => {
               <option value="cancelled">Cancelled</option>
             </select>
           </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCsv}
+            disabled={invoices.length === 0}
+            title="Export filtered invoices to CSV"
+          >
+            <Download className="w-4 h-4 mr-1.5" /> Export CSV
+          </Button>
 
           <Button variant="primary" size="sm" onClick={() => setFormModalOpen(true)}>
             <Plus className="w-4 h-4 mr-1.5" /> Create Invoice
