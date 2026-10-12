@@ -3,13 +3,14 @@ import { Enquiry, EnquiryStatus } from '@/types/database';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { ArrowRight, MoreHorizontal, Edit, Trash2, User } from 'lucide-react';
+import { ArrowRight, MoreHorizontal, Edit, Trash2, User, Receipt } from 'lucide-react';
 
 interface EnquiryPipelineProps {
   enquiries: Enquiry[];
   onStatusChange: (id: string, newStatus: EnquiryStatus) => void;
   onEdit: (enquiry: Enquiry) => void;
   onDelete: (enquiry: Enquiry) => void;
+  onCreateInvoice?: (enquiry: Enquiry) => void;
   onViewCustomer?: (customerId: string) => void;
 }
 
@@ -26,6 +27,7 @@ export const EnquiryPipeline: React.FC<EnquiryPipelineProps> = ({
   onStatusChange,
   onEdit,
   onDelete,
+  onCreateInvoice,
   onViewCustomer,
 }) => {
   return (
@@ -113,6 +115,15 @@ export const EnquiryPipeline: React.FC<EnquiryPipelineProps> = ({
                       </select>
 
                       <div className="flex items-center gap-1">
+                        {onCreateInvoice && (
+                          <button
+                            onClick={() => onCreateInvoice(item)}
+                            className="p-1 text-emerald-600 hover:text-emerald-700 rounded hover:bg-emerald-50"
+                            title="Convert to Invoice"
+                          >
+                            <Receipt className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                         <button
                           onClick={() => onEdit(item)}
                           className="p-1 text-slate-400 hover:text-slate-700 rounded hover:bg-slate-100"

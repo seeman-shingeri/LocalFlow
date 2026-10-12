@@ -17,6 +17,7 @@ interface InvoiceFormModalProps {
   onClose: () => void;
   onSuccess: (invoice: Invoice) => void;
   defaultCustomerId?: string;
+  defaultItem?: { description: string; unit_price: number };
 }
 
 interface LineItemInput {
@@ -30,6 +31,7 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
   onClose,
   onSuccess,
   defaultCustomerId,
+  defaultItem,
 }) => {
   const { currentWorkspace } = useWorkspace();
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -52,13 +54,27 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
     if (currentWorkspace && isOpen) {
       customerService.getAll(currentWorkspace.id).then((c) => {
         setCustomers(c.filter((cust) => cust.status !== 'archived'));
-        if (!customerId && c.length > 0) {
-          setCustomerId(defaultCustomerId || c[0].id);
+        if (defaultCustomerId) {
+          setCustomerId(defaultCustomerId);
+        } else if (!customerId && c.length > 0) {
+          setCustomerId(c[0].id);
         }
       });
       invoiceService.getNextInvoiceNumber(currentWorkspace.id).then(setInvoiceNumber);
+      if (defaultItem) {
+        setItems([
+          {
+            description: defaultItem.description,
+            quantity: 1,
+            unit_price: Number(defaultItem.unit_price) || 150,
+          },
+        ]);
+      } else {
+        setItems([{ description: 'Service Labor & Diagnosis', quantity: 1, unit_price: 150 }]);
+      }
+      setError(null);
     }
-  }, [currentWorkspace, isOpen, defaultCustomerId]);
+  }, [currentWorkspace, isOpen, defaultCustomerId, defaultItem]);
 
   const handleAddItem = () => {
     setItems([...items, { description: '', quantity: 1, unit_price: 0 }]);

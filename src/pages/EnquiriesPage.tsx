@@ -4,23 +4,27 @@ import { enquiryService } from '@/services/enquiryService';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { EnquiryPipeline } from '@/components/enquiry/EnquiryPipeline';
 import { EnquiryFormModal } from '@/components/enquiry/EnquiryFormModal';
+import { InvoiceFormModal } from '@/components/invoice/InvoiceFormModal';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { CustomerDetailDrawer } from '@/components/customer/CustomerDetailDrawer';
 import { AIDraftModal } from '@/components/ai/AIDraftModal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { formatCurrency, formatDate } from '@/lib/utils';
-import { Inbox, Plus, LayoutGrid, List, User, Edit, Trash2 } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import { Plus, LayoutGrid, List, User, Edit, Trash2, Search, Filter, Receipt } from 'lucide-react';
 
 export const EnquiriesPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
+  const [search, setSearch] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   // Modals state
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [editingEnquiry, setEditingEnquiry] = useState<Enquiry | null>(null);
+  const [invoiceTargetEnquiry, setInvoiceTargetEnquiry] = useState<Enquiry | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Enquiry | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -68,6 +72,20 @@ export const EnquiriesPage: React.FC = () => {
     }
   };
 
+  const filteredEnquiries = enquiries.filter((e) => {
+    if (priorityFilter !== 'all' && e.priority !== priorityFilter) {
+      return false;
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      const matchTitle = e.title.toLowerCase().includes(q);
+      const matchCustomer = e.customer?.name?.toLowerCase().includes(q) || false;
+      const matchService = e.service_type?.toLowerCase().includes(q) || false;
+      return matchTitle || matchCustomer || matchService;
+    }
+    return true;
+  });
+
   const totalPipelineValue = enquiries
     .filter((e) => e.status !== 'converted' && e.status !== 'not_converted')
     .reduce((sum, e) => sum + (Number(e.estimated_value) || 0), 0);
@@ -84,7 +102,7 @@ export const EnquiriesPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">Enquiry Pipeline</h1>
             <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-bold text-slate-700">
-              {enquiries.length}
+              {filteredEnquiries.length}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -163,16 +181,45 @@ export const EnquiriesPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Search & Priority Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search deals by title, customer, or service..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="text-xs rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+      </div>
+
       {/* Main Content: Kanban or Table */}
       {viewMode === 'kanban' ? (
         <EnquiryPipeline
-          enquiries={enquiries}
+          enquiries={filteredEnquiries}
           onStatusChange={handleStatusChange}
           onEdit={(enq) => {
             setEditingEnquiry(enq);
             setFormModalOpen(true);
           }}
           onDelete={(enq) => setDeleteTarget(enq)}
+          onCreateInvoice={(enq) => setInvoiceTargetEnquiry(enq)}
           onViewCustomer={(cid) => setDrawerCustomerId(cid)}
         />
       ) : (
@@ -190,14 +237,14 @@ export const EnquiriesPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {enquiries.length === 0 ? (
+              {filteredEnquiries.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-400">
                     No enquiries found.
                   </td>
                 </tr>
               ) : (
-                enquiries.map((e) => (
+                filteredEnquiries.map((e) => (
                   <tr key={e.id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-slate-900">{e.title}</td>
 
@@ -251,10 +298,19 @@ export const EnquiriesPage: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="icon"
+                          onClick={() => setInvoiceTargetEnquiry(e)}
+                          title="Convert to Invoice"
+                        >
+                          <Receipt className="w-3.5 h-3.5 text-emerald-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => {
                             setEditingEnquiry(e);
                             setFormModalOpen(true);
                           }}
+                          title="Edit Enquiry"
                         >
                           <Edit className="w-3.5 h-3.5 text-slate-600" />
                         </Button>
@@ -262,6 +318,7 @@ export const EnquiriesPage: React.FC = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => setDeleteTarget(e)}
+                          title="Delete Enquiry"
                         >
                           <Trash2 className="w-3.5 h-3.5 text-rose-500" />
                         </Button>
@@ -284,6 +341,27 @@ export const EnquiriesPage: React.FC = () => {
         }}
         onSuccess={() => loadEnquiries()}
         initialEnquiry={editingEnquiry}
+      />
+
+      <InvoiceFormModal
+        isOpen={Boolean(invoiceTargetEnquiry)}
+        onClose={() => setInvoiceTargetEnquiry(null)}
+        defaultCustomerId={invoiceTargetEnquiry?.customer_id}
+        defaultItem={
+          invoiceTargetEnquiry
+            ? {
+                description: invoiceTargetEnquiry.title,
+                unit_price: Number(invoiceTargetEnquiry.estimated_value) || 150,
+              }
+            : undefined
+        }
+        onSuccess={async () => {
+          if (invoiceTargetEnquiry && invoiceTargetEnquiry.status !== 'converted') {
+            await enquiryService.updateStatus(invoiceTargetEnquiry.id, 'converted');
+          }
+          setInvoiceTargetEnquiry(null);
+          loadEnquiries();
+        }}
       />
 
       <CustomerDetailDrawer
@@ -310,3 +388,4 @@ export const EnquiriesPage: React.FC = () => {
     </div>
   );
 };
+
