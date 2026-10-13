@@ -210,16 +210,24 @@ export const CustomersPage: React.FC = () => {
                   <td className="py-3.5 px-4 text-slate-600">
                     <div className="space-y-0.5">
                       {c.phone && (
-                        <div className="flex items-center gap-1.5 text-slate-600">
+                        <a
+                          href={`tel:${c.phone}`}
+                          className="flex items-center gap-1.5 text-slate-600 hover:text-indigo-600 hover:underline transition-colors"
+                          title={`Click to call ${c.phone}`}
+                        >
                           <Phone className="w-3 h-3 text-slate-400" />
                           <span>{c.phone}</span>
-                        </div>
+                        </a>
                       )}
                       {c.email && (
-                        <div className="flex items-center gap-1.5 text-slate-500">
+                        <a
+                          href={`mailto:${c.email}`}
+                          className="flex items-center gap-1.5 text-slate-500 hover:text-indigo-600 hover:underline transition-colors"
+                          title={`Click to email ${c.email}`}
+                        >
                           <Mail className="w-3 h-3 text-slate-400" />
                           <span>{c.email}</span>
-                        </div>
+                        </a>
                       )}
                     </div>
                   </td>
