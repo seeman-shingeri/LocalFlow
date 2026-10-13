@@ -131,5 +131,5 @@ src/
 │   ├── ai/         # AIAssistantPanel, AIDraftModal
 │   └── dashboard/  # StatCard, RevenueChart, FollowUpsDueWidget
 ├── pages/          # LoginPage, SignupPage, ResetPasswordPage, DashboardPage, CustomersPage, EnquiriesPage, FollowUpsPage, AppointmentsPage, InvoicesPage, AIAssistantPage, SettingsPage, NotFoundPage
-└── test/           # invoiceCalculation.test.ts, followUpFiltering.test.ts, metricsCalculation.test.ts
+└── test/           # invoiceCalculation.test.ts, followUpFiltering.test.ts, metricsCalculation.test.ts, serviceIntegration.test.ts, csvAndEnquiry.test.ts
 ```

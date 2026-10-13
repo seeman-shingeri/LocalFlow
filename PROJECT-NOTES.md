@@ -105,8 +105,44 @@
 
 ---
 
-## 6. Unresolved Issues & Production Readiness Notes
-- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`21/21` tests), and Vite production builds (`npm run build`) pass with zero errors.
+## 6. CSV Export, Pipeline Filters, Route Lazy Loading & Fast Invoice Terms
+- **Timestamp**: `2026-10-12 21:18:37 +05:30` – `2026-10-13 22:20:50 +05:30`
+- **Scope & Enhancements**:
+  1. **CSV Export (`3cff982`)**: Added RFC 4180 compliant CSV generator (`buildCsvString`, `exportToCsv`) in `src/lib/utils.ts` with spreadsheet formula injection protection. Added 1-click **Export CSV** toolbar buttons on `CustomersPage` and `InvoicesPage`.
+  2. **Enquiry Conversion & Filtering (`07fb312`)**: Added keyword search (`search`) and priority filter dropdown to `EnquiriesPage`. Added 1-click **Convert to Invoice** button on both Kanban deal cards and table rows that prefills `InvoiceFormModal` with customer details and line items.
+  3. **Bundle Performance Optimization (`24efe5b`)**: Configured Rollup `manualChunks` in `vite.config.ts` (`react-vendor`, `charts-vendor`, `supabase-vendor`, `ui-vendor`) and implemented `React.lazy` / `Suspense` route-level code splitting in `src/App.tsx`.
+  4. **Clickable Customer Actions (`4106f39`)**: Replaced plain text phone and email fields in `CustomersPage` with active `tel:` and `mailto:` action links.
+  5. **Dashboard Action Badges (`484129a`)**: Added live Overdue and Today count pill badges in `FollowUpsDueWidget` header.
+  6. **Payment Terms Presets (`071e478`)**: Added quick terms pill selectors (`Receipt`, `Net 7`, `Net 14`, `Net 30`) in `InvoiceFormModal`.
+- **Files Changed**:
+  - `src/lib/utils.ts`
+  - `src/pages/CustomersPage.tsx`
+  - `src/pages/InvoicesPage.tsx`
+  - `src/pages/EnquiriesPage.tsx`
+  - `src/components/enquiry/EnquiryPipeline.tsx`
+  - `src/components/invoice/InvoiceFormModal.tsx`
+  - `src/components/dashboard/FollowUpsDueWidget.tsx`
+  - `vite.config.ts`
+  - `src/App.tsx`
+  - `src/test/csvAndEnquiry.test.ts`
+- **Tests / Checks Executed**:
+  - `npx tsc --noEmit` — Passed (`0` errors)
+  - `npm run test` — Passed (`5` test files, `24` tests passed)
+  - `npm run build` — Passed (all split chunks compiled cleanly)
+- **Commits Pushed to `origin/main`**:
+  - `3cff982` — `feat: add CSV export for customers and invoices`
+  - `07fb312` — `feat: add enquiry pipeline search/priority filter and one-click invoice conversion`
+  - `24efe5b` — `perf: configure Vite manual chunks and route lazy loading for faster initial load`
+  - `b04cafb` — `test: add CSV export and enquiry pipeline unit tests`
+  - `4106f39` — `feat: add quick customer phone call and email action links in customer list`
+  - `484129a` — `feat: add follow-up count badge and quick complete button on dashboard widget`
+  - `071e478` — `feat: add invoice payment terms presets and due date quick selector`
+
+---
+
+## 7. Unresolved Issues & Production Readiness Notes
+- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`24/24` tests across 5 test suites), and Vite production builds (`npm run build`) pass cleanly with zero warnings or errors.
 - **External Environment Configuration**:
   - Running against a live cloud Supabase PostgreSQL instance requires populating `.env` (from `.env.example`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and executing `supabase/schema.sql` in the Supabase SQL Editor. When omitted, LocalFlow AI automatically runs in full-featured local persistence mode (`localStorageDb`).
   - Live LLM generation requires `VITE_GEMINI_API_KEY` in `.env` (or a Supabase Edge Function proxy for multi-user production); when omitted, `aiService` uses its verified deterministic business-data engine and structured templates.
+
