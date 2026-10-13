@@ -14,6 +14,7 @@ import {
   Trash2,
   User,
   Edit,
+  Mail,
 } from 'lucide-react';
 
 interface FollowUpListProps {
@@ -122,10 +123,24 @@ export const FollowUpList: React.FC<FollowUpListProps> = ({
                     </button>
                   )}
                   {item.customer?.phone && (
-                    <span className="flex items-center gap-1 text-slate-500">
+                    <a
+                      href={`tel:${item.customer.phone}`}
+                      className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors"
+                      title="Call customer"
+                    >
                       <Phone className="w-3 h-3 text-slate-400" />
                       {item.customer.phone}
-                    </span>
+                    </a>
+                  )}
+                  {item.customer?.email && (
+                    <a
+                      href={`mailto:${item.customer.email}`}
+                      className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors"
+                      title="Email customer"
+                    >
+                      <Mail className="w-3 h-3 text-slate-400" />
+                      {item.customer.email}
+                    </a>
                   )}
                   <span className="flex items-center gap-1 text-slate-500">
                     <Clock className="w-3 h-3 text-slate-400" />

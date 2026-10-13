@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isDateOverdue, isDateToday } from '../lib/utils';
+import { isDateOverdue, isDateToday, filterFollowUps } from '../lib/utils';
 import { subDays, addDays, format } from 'date-fns';
 
 describe('Follow-up Date Categorization', () => {
@@ -40,5 +40,62 @@ describe('Follow-up Date Categorization', () => {
     expect(isDateOverdue(undefined)).toBe(false);
     expect(isDateToday(null)).toBe(false);
     expect(isDateToday(undefined)).toBe(false);
+  });
+});
+
+describe('Follow-up Search and Priority Filtering', () => {
+  const sampleFollowUps = [
+    {
+      title: 'Call back about roofing estimate',
+      priority: 'high',
+      notes: 'Customer requested discount on materials',
+      customer: { name: 'Alice Walker' },
+    },
+    {
+      title: 'Send invoice reminder',
+      priority: 'medium',
+      notes: 'Invoice #1004 is overdue',
+      customer: { name: 'Bob Builders' },
+    },
+    {
+      title: 'Check plumbing satisfaction',
+      priority: 'low',
+      notes: 'Standard 2-week checkin',
+      customer: { name: 'Charlie Davis' },
+    },
+  ];
+
+  it('filters follow-ups by priority level', () => {
+    const highOnly = filterFollowUps(sampleFollowUps, '', 'high');
+    expect(highOnly).toHaveLength(1);
+    expect(highOnly[0].title).toBe('Call back about roofing estimate');
+
+    const medOnly = filterFollowUps(sampleFollowUps, '', 'medium');
+    expect(medOnly).toHaveLength(1);
+    expect(medOnly[0].customer?.name).toBe('Bob Builders');
+  });
+
+  it('filters follow-ups by customer name keyword', () => {
+    const filtered = filterFollowUps(sampleFollowUps, 'Alice', 'all');
+    expect(filtered).toHaveLength(1);
+    expect(filtered[0].title).toContain('roofing');
+  });
+
+  it('filters follow-ups by notes or title keyword case-insensitively', () => {
+    const searchInvoice = filterFollowUps(sampleFollowUps, 'invoice', 'all');
+    expect(searchInvoice).toHaveLength(1);
+    expect(searchInvoice[0].customer?.name).toBe('Bob Builders');
+
+    const searchDiscount = filterFollowUps(sampleFollowUps, 'discount', 'all');
+    expect(searchDiscount).toHaveLength(1);
+    expect(searchDiscount[0].customer?.name).toBe('Alice Walker');
+  });
+
+  it('combines search query and priority filter correctly', () => {
+    const combinedMatch = filterFollowUps(sampleFollowUps, 'invoice', 'medium');
+    expect(combinedMatch).toHaveLength(1);
+
+    const combinedMismatch = filterFollowUps(sampleFollowUps, 'invoice', 'high');
+    expect(combinedMismatch).toHaveLength(0);
   });
 });

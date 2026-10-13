@@ -137,6 +137,24 @@
   - `4106f39` — `feat: add quick customer phone call and email action links in customer list`
   - `484129a` — `feat: add follow-up count badge and quick complete button on dashboard widget`
   - `071e478` — `feat: add invoice payment terms presets and due date quick selector`
+  - `ac7d4e8` — `test: refine enquiry mock payload in csvAndEnquiry test`
+  - `Latest` — `feat: add follow-up search, priority filter, and quick contact action links`
+
+---
+
+## 7. Follow-up Search, Priority Filter, and Direct Contact Quick-Actions (October 13, 2026)
+- **Scope & Enhancements**:
+  1. **Follow-up Search & Priority Filter (`FollowUpsPage.tsx`)**: Added interactive search toolbar with instant keyword search across follow-up titles, notes, and customer names, plus priority filter dropdown (`High`, `Medium`, `Low`, `All`) with reset toggle.
+  2. **Direct Contact Quick-Links (`FollowUpList.tsx`)**: Replaced static contact numbers with interactive `tel:` and `mailto:` links featuring `lucide-react` icons.
+  3. **Pure Filter Helper & Unit Tests (`utils.ts`, `followUpFiltering.test.ts`)**: Added typed `filterFollowUps` utility and 4 new unit test specs verifying case-insensitive keyword search, priority filtering, and combination logic. All 28 tests pass.
+- **Files Changed**:
+  - `src/lib/utils.ts`
+  - `src/components/followUp/FollowUpList.tsx`
+  - `src/pages/FollowUpsPage.tsx`
+  - `src/test/followUpFiltering.test.ts`
+- **Tests / Checks Executed**:
+  - `npx tsc --noEmit` — Passed (`0` errors)
+  - `npm run test` — Passed (`5` test files, `28` tests passed)
 
 ---
 

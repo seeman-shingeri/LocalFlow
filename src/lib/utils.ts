@@ -124,3 +124,28 @@ export function exportToCsv(
   URL.revokeObjectURL(url);
 }
 
+export function filterFollowUps<
+  T extends {
+    title: string;
+    priority: string;
+    notes?: string | null;
+    customer?: { name: string } | null;
+  }
+>(items: T[], searchQuery: string = '', priority: string = 'all'): T[] {
+  let filtered = items;
+  if (priority && priority !== 'all') {
+    filtered = filtered.filter((i) => i.priority === priority);
+  }
+  if (searchQuery && searchQuery.trim()) {
+    const q = searchQuery.toLowerCase().trim();
+    filtered = filtered.filter(
+      (i) =>
+        i.title.toLowerCase().includes(q) ||
+        (i.customer?.name && i.customer.name.toLowerCase().includes(q)) ||
+        (i.notes && i.notes.toLowerCase().includes(q))
+    );
+  }
+  return filtered;
+}
+
+

@@ -9,7 +9,8 @@ import { AIDraftModal } from '@/components/ai/AIDraftModal';
 import { CustomerDetailDrawer } from '@/components/customer/CustomerDetailDrawer';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { Button } from '@/components/ui/Button';
-import { Clock, Plus, AlertTriangle, CheckCircle, Calendar } from 'lucide-react';
+import { Clock, Plus, AlertTriangle, CheckCircle, Calendar, Search, X } from 'lucide-react';
+import { filterFollowUps } from '@/lib/utils';
 
 export const FollowUpsPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
@@ -20,6 +21,8 @@ export const FollowUpsPage: React.FC = () => {
     completed: [],
   });
   const [activeTab, setActiveTab] = useState<'today' | 'overdue' | 'upcoming' | 'completed'>('today');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const [loading, setLoading] = useState(true);
 
   // Modals state
@@ -78,18 +81,24 @@ export const FollowUpsPage: React.FC = () => {
   };
 
   const getListForTab = () => {
+    let list: FollowUp[] = [];
     switch (activeTab) {
       case 'overdue':
-        return data.overdue;
+        list = data.overdue;
+        break;
       case 'today':
-        return data.today;
+        list = data.today;
+        break;
       case 'upcoming':
-        return data.upcoming;
+        list = data.upcoming;
+        break;
       case 'completed':
-        return data.completed;
+        list = data.completed;
+        break;
       default:
-        return [];
+        list = [];
     }
+    return filterFollowUps(list, searchQuery, priorityFilter);
   };
 
   return (
@@ -166,6 +175,56 @@ export const FollowUpsPage: React.FC = () => {
             </span>
           </button>
         ))}
+      </div>
+
+      {/* Search & Priority Filter Toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search follow-ups by title, notes, or customer..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white text-slate-800 placeholder-slate-400"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value as any)}
+            className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium"
+          >
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+
+          {(searchQuery || priorityFilter !== 'all') && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setPriorityFilter('all');
+              }}
+              className="text-xs text-indigo-600 hover:text-indigo-800 font-medium px-2 py-1"
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Follow-up List */}
