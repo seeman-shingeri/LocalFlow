@@ -46,7 +46,6 @@ describe('CSV Export & Enquiry Pipeline Operations', () => {
         estimated_value: 2450,
         status: 'new',
         priority: 'high',
-        follow_up_date: null,
       });
 
       expect(created.id).toBeTruthy();
