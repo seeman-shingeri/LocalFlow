@@ -46,7 +46,6 @@ describe('CSV Export & Enquiry Pipeline Operations', () => {
         estimated_value: 2450,
         status: 'new',
         priority: 'high',
-        source: 'Website',
         follow_up_date: null,
       });
 

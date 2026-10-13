@@ -197,13 +197,38 @@ export const InvoiceFormModal: React.FC<InvoiceFormModalProps> = ({
             onChange={(e) => setIssueDate(e.target.value)}
           />
 
-          <Input
-            label="Due Date *"
-            type="date"
-            required
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
+          <div className="space-y-1">
+            <Input
+              label="Due Date *"
+              type="date"
+              required
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
+            <div className="flex flex-wrap items-center gap-1 pt-0.5">
+              <span className="text-[10px] text-slate-400 font-medium mr-0.5">Quick terms:</span>
+              {[
+                { label: 'Receipt', days: 0, desc: 'Payment due upon receipt.' },
+                { label: 'Net 7', days: 7, desc: 'Payment due within 7 days of issue date.' },
+                { label: 'Net 14', days: 14, desc: 'Payment due within 14 days of issue date.' },
+                { label: 'Net 30', days: 30, desc: 'Payment due within 30 days of issue date.' },
+              ].map((term) => (
+                <button
+                  key={term.label}
+                  type="button"
+                  onClick={() => {
+                    const base = issueDate ? new Date(issueDate) : new Date();
+                    const nextDue = format(addDays(base, term.days), 'yyyy-MM-dd');
+                    setDueDate(nextDue);
+                    setTerms(term.desc);
+                  }}
+                  className="rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 transition-colors"
+                >
+                  {term.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <Input
             label="Tax Rate (%)"
