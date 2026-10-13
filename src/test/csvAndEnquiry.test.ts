@@ -41,7 +41,7 @@ describe('CSV Export & Enquiry Pipeline Operations', () => {
         workspace_id: WORKSPACE_ID,
         customer_id: 'cust-001',
         title: 'Whole-Home Dehumidifier Installation',
-        description: 'Customer requested quote for 90-pint whole-home unit',
+        notes: 'Customer requested quote for 90-pint whole-home unit',
         service_type: 'Installation',
         estimated_value: 2450,
         status: 'new',

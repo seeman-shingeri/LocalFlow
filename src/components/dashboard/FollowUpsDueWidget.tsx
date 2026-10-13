@@ -26,7 +26,19 @@ export const FollowUpsDueWidget: React.FC<FollowUpsDueWidgetProps> = ({
     <Card className="p-5">
       <CardHeader className="px-0 pt-0 flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Follow-ups Requiring Action</CardTitle>
+          <div className="flex flex-wrap items-center gap-2">
+            <CardTitle>Follow-ups Requiring Action</CardTitle>
+            {overdue.length > 0 && (
+              <span className="rounded-full bg-rose-100 text-rose-700 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                {overdue.length} Overdue
+              </span>
+            )}
+            {today.length > 0 && (
+              <span className="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                {today.length} Today
+              </span>
+            )}
+          </div>
           <CardDescription>Overdue and scheduled customer calls for today</CardDescription>
         </div>
         <Link
