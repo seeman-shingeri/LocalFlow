@@ -197,8 +197,26 @@
 
 ---
 
-## 10. Unresolved Issues & Production Readiness Notes
-- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`40/40` tests across 7 test suites), and Vite production builds pass cleanly with zero warnings or errors.
+## 10. Outstanding Payment Tracker & Accounts Receivable Aging (October 14, 2026)
+- **Scope & Enhancements**:
+  1. **Aging Analysis Engine (`src/lib/paymentAging.ts`)**: Implemented calendar-day aging calculation engine with standard AR buckets: `Current / Not Due`, `1–15 Days Overdue`, `16–30 Days Overdue`, and `30+ Days Critical Overdue`.
+  2. **Outstanding Payment Tracker Component (`src/components/invoice/OutstandingPaymentTracker.tsx`)**: Built visual aging summary cards with 1-click bucket filters, customer direct contact links (`tel:` / `mailto:`), overdue days indicators, and direct **Record Payment** action buttons.
+  3. **Invoices Page Tab Integration (`src/pages/InvoicesPage.tsx`)**: Added dual-tab navigation switching between full invoice registry and the Outstanding Payment Tracker, complete with live unpaid badge counter.
+  4. **Unit Tests (`src/test/outstandingPaymentTracker.test.ts`)**: 3 unit tests verifying aging bucket partitioning, exclusion of settled/draft/cancelled invoices, and sorting by longest overdue days first.
+- **Files Changed**:
+  - `src/lib/paymentAging.ts`
+  - `src/components/invoice/OutstandingPaymentTracker.tsx`
+  - `src/pages/InvoicesPage.tsx`
+  - `src/test/outstandingPaymentTracker.test.ts`
+- **Tests / Checks Executed**:
+  - `npm test` — Passed (`8` test files, `43` tests passed)
+  - `npx tsc --noEmit` — Passed (`0` errors)
+  - `npm run build` — Passed (all chunks bundled cleanly in ~16s)
+
+---
+
+## 11. Unresolved Issues & Production Readiness Notes
+- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`43/43` tests across 8 test suites), and Vite production builds pass cleanly with zero warnings or errors.
 - **External Environment Configuration**:
   - Running against a live cloud Supabase PostgreSQL instance requires populating `.env` (from `.env.example`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and executing `supabase/schema.sql` in the Supabase SQL Editor. When omitted, LocalFlow AI automatically runs in full-featured local persistence mode (`localStorageDb`).
   - Live LLM generation requires `VITE_GEMINI_API_KEY` in `.env` (or a Supabase Edge Function proxy for multi-user production); when omitted, `aiService` uses its verified deterministic business-data engine and structured templates.

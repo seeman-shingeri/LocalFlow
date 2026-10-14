@@ -8,13 +8,15 @@ import { RecordPaymentModal } from '@/components/invoice/RecordPaymentModal';
 import { PrintableInvoiceModal } from '@/components/invoice/PrintableInvoiceModal';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { CustomerDetailDrawer } from '@/components/customer/CustomerDetailDrawer';
+import { OutstandingPaymentTracker } from '@/components/invoice/OutstandingPaymentTracker';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, exportToCsv } from '@/lib/utils';
-import { Receipt, Plus, Filter, DollarSign, Clock, CheckCircle2, Download } from 'lucide-react';
+import { Receipt, Plus, Filter, DollarSign, Clock, CheckCircle2, Download, AlertTriangle } from 'lucide-react';
 
 export const InvoicesPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [activeTab, setActiveTab] = useState<'all' | 'tracker'>('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
@@ -164,48 +166,115 @@ export const InvoicesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Financial Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-            Total Invoiced
-          </p>
-          <p className="text-xl font-bold text-slate-900 mt-1">
-            {formatCurrency(totalBilled, currentWorkspace?.currency)}
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">Across all issued statements</p>
-        </div>
+      {/* Navigation Tabs */}
+      <div className="flex border-b border-slate-200 bg-white rounded-t-xl px-4 pt-2">
+        <button
+          onClick={() => setActiveTab('all')}
+          className={`flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 transition-colors ${
+            activeTab === 'all'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Receipt className="w-3.5 h-3.5" />
+          <span>All Invoices</span>
+          <span className="rounded-full bg-slate-100 text-slate-700 px-2 py-0.2 text-[10px]">
+            {invoices.length}
+          </span>
+        </button>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
-            Total Payments Collected
-          </p>
-          <p className="text-xl font-bold text-emerald-700 mt-1">
-            {formatCurrency(totalCollected, currentWorkspace?.currency)}
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">Recorded cash, card, and bank receipts</p>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-rose-600">
-            Outstanding Receivables
-          </p>
-          <p className="text-xl font-bold text-rose-700 mt-1">
-            {formatCurrency(totalOutstanding, currentWorkspace?.currency)}
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">Pending collection from clients</p>
-        </div>
+        <button
+          onClick={() => setActiveTab('tracker')}
+          className={`flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 transition-colors ${
+            activeTab === 'tracker'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <DollarSign className="w-3.5 h-3.5" />
+          <span>Outstanding Payment Tracker</span>
+          {invoices.filter(
+            (i) =>
+              i.status !== 'paid' &&
+              i.status !== 'cancelled' &&
+              i.status !== 'draft' &&
+              Number(i.balance_due) > 0
+          ).length > 0 && (
+            <span className="rounded-full bg-rose-100 text-rose-800 px-2 py-0.2 text-[10px] font-bold">
+              {
+                invoices.filter(
+                  (i) =>
+                    i.status !== 'paid' &&
+                    i.status !== 'cancelled' &&
+                    i.status !== 'draft' &&
+                    Number(i.balance_due) > 0
+                ).length
+              }{' '}
+              Unpaid
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* Invoices List */}
-      <InvoiceList
-        invoices={invoices}
-        onRecordPayment={(inv) => setPaymentTargetInvoice(inv)}
-        onStatusChange={handleStatusChange}
-        onViewPrint={(inv) => setPrintTargetInvoice(inv)}
-        onDelete={(inv) => setDeleteTarget(inv)}
-        onViewCustomer={(cid) => setDrawerCustomerId(cid)}
-      />
+      {activeTab === 'tracker' ? (
+        <OutstandingPaymentTracker
+          invoices={invoices}
+          currency={currentWorkspace?.currency}
+          onRecordPayment={(inv) => setPaymentTargetInvoice(inv)}
+          onViewCustomer={(cid) => setDrawerCustomerId(cid)}
+        />
+      ) : (
+        <>
+          {/* Financial Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Total Invoiced
+              </p>
+              <p className="text-xl font-bold text-slate-900 mt-1">
+                {formatCurrency(totalBilled, currentWorkspace?.currency)}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">Across all issued statements</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
+                Total Payments Collected
+              </p>
+              <p className="text-xl font-bold text-emerald-700 mt-1">
+                {formatCurrency(totalCollected, currentWorkspace?.currency)}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">Recorded cash, card, and bank receipts</p>
+            </div>
+
+            <div
+              onClick={() => setActiveTab('tracker')}
+              className="rounded-xl border border-slate-200 bg-white p-4 cursor-pointer hover:border-rose-300 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-rose-600">
+                  Outstanding Receivables
+                </p>
+                <span className="text-[10px] text-rose-600 font-semibold underline">View Tracker →</span>
+              </div>
+              <p className="text-xl font-bold text-rose-700 mt-1">
+                {formatCurrency(totalOutstanding, currentWorkspace?.currency)}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">Pending collection from clients</p>
+            </div>
+          </div>
+
+          {/* Invoices List */}
+          <InvoiceList
+            invoices={invoices}
+            onRecordPayment={(inv) => setPaymentTargetInvoice(inv)}
+            onStatusChange={handleStatusChange}
+            onViewPrint={(inv) => setPrintTargetInvoice(inv)}
+            onDelete={(inv) => setDeleteTarget(inv)}
+            onViewCustomer={(cid) => setDrawerCustomerId(cid)}
+          />
+        </>
+      )}
 
       {/* Modals */}
       <InvoiceFormModal
