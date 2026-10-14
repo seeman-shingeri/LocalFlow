@@ -158,8 +158,29 @@
 
 ---
 
-## 7. Unresolved Issues & Production Readiness Notes
-- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`24/24` tests across 5 test suites), and Vite production builds (`npm run build`) pass cleanly with zero warnings or errors.
+## 8. Shamiyana Low-Stock Inventory Alerts (October 14, 2026)
+- **Scope & Enhancements**:
+  1. **Inventory Data Model & Storage (`src/types/database.ts`, `src/lib/localStorageDb.ts`)**: Added `InventoryItem` and `InventoryStockStatus` types, seeded real Shamiyana & event rental items (tents, poles, banquet chairs, fairy lights, sound systems) with safety thresholds. Added CRUD methods in `localStorageDb`.
+  2. **Inventory Service (`src/services/inventoryService.ts`)**: Implemented `getLowStockAlerts(workspaceId)`, `getAll(workspaceId)`, `getById(id)`, and `updateStock(id, updates)` with validation against negative stock levels and sorting by urgency (critical 0 stock first).
+  3. **Low-Stock Alert Widget (`src/components/dashboard/LowStockAlertWidget.tsx`)**: Dashboard widget showing real-time low-stock alerts, visual stock health bars, alert counter badge, loading skeletons, and empty state when healthy.
+  4. **Item Detail & Stock Adjustment Modal (`src/components/inventory/InventoryItemModal.tsx`)**: Modal allowing operators to inspect specifications, rental rates, warehouse bay location, and adjust available stock with immediate dashboard reactivity.
+  5. **Unit Tests (`src/test/inventoryAlerts.test.ts`)**: 6 comprehensive unit tests verifying low stock detection, out-of-stock priority sorting, stock replenishment updates, and negative value rejection.
+- **Files Changed**:
+  - `src/types/database.ts`
+  - `src/lib/localStorageDb.ts`
+  - `src/services/inventoryService.ts`
+  - `src/components/inventory/InventoryItemModal.tsx`
+  - `src/components/dashboard/LowStockAlertWidget.tsx`
+  - `src/pages/DashboardPage.tsx`
+  - `src/test/inventoryAlerts.test.ts`
+- **Tests / Checks Executed**:
+  - `npm test` — Passed (`6` test files, `34` tests passed)
+  - `npx tsc --noEmit` — Passed (`0` errors)
+
+---
+
+## 9. Unresolved Issues & Production Readiness Notes
+- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`34/34` tests across 6 test suites), and Vite production builds pass cleanly with zero warnings or errors.
 - **External Environment Configuration**:
   - Running against a live cloud Supabase PostgreSQL instance requires populating `.env` (from `.env.example`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and executing `supabase/schema.sql` in the Supabase SQL Editor. When omitted, LocalFlow AI automatically runs in full-featured local persistence mode (`localStorageDb`).
   - Live LLM generation requires `VITE_GEMINI_API_KEY` in `.env` (or a Supabase Edge Function proxy for multi-user production); when omitted, `aiService` uses its verified deterministic business-data engine and structured templates.

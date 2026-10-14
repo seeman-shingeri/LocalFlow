@@ -8,6 +8,7 @@ import {
   CommunicationLog,
   Workspace,
   Profile,
+  InventoryItem,
 } from '@/types/database';
 import { addDays, subDays, format } from 'date-fns';
 
@@ -401,6 +402,128 @@ export const INITIAL_COMMUNICATION_LOGS: CommunicationLog[] = [
   },
 ];
 
+export const INITIAL_INVENTORY: InventoryItem[] = [
+  {
+    id: 'inv-001',
+    workspace_id: 'ws-apex-001',
+    name: 'Waterproof Shamiyana Marquee Tent (40x60 ft)',
+    category: 'Shamiyana & Tents',
+    sku: 'SHAM-TNT-4060',
+    total_quantity: 10,
+    available_quantity: 2,
+    reserved_quantity: 8,
+    min_stock_level: 4,
+    rental_rate_per_day: 350.0,
+    unit: 'units',
+    location: 'Main Warehouse Bay A-1',
+    notes: 'Heavy-duty fire-retardant fabric. High seasonal demand for outdoor weddings.',
+    created_at: subDays(today, 60).toISOString(),
+    updated_at: subDays(today, 2).toISOString(),
+  },
+  {
+    id: 'inv-002',
+    workspace_id: 'ws-apex-001',
+    name: 'Heavy Duty Galvanized Steel Support Poles (20ft)',
+    category: 'Rigging & Hardware',
+    sku: 'SHAM-POLE-20',
+    total_quantity: 60,
+    available_quantity: 5,
+    reserved_quantity: 55,
+    min_stock_level: 15,
+    rental_rate_per_day: 15.0,
+    unit: 'units',
+    location: 'Rigging Rack 3',
+    notes: 'Structural tent uprights. 55 currently deployed across 3 event sites.',
+    created_at: subDays(today, 60).toISOString(),
+    updated_at: subDays(today, 1).toISOString(),
+  },
+  {
+    id: 'inv-003',
+    workspace_id: 'ws-apex-001',
+    name: 'White Padded Banquet Chairs',
+    category: 'Seating & Tables',
+    sku: 'SEAT-CHR-WHT',
+    total_quantity: 500,
+    available_quantity: 40,
+    reserved_quantity: 460,
+    min_stock_level: 100,
+    rental_rate_per_day: 3.5,
+    unit: 'units',
+    location: 'Stack Section B',
+    notes: 'Deluxe banquet chairs. 460 booked for weekend corporate banquet.',
+    created_at: subDays(today, 45).toISOString(),
+    updated_at: subDays(today, 3).toISOString(),
+  },
+  {
+    id: 'inv-004',
+    workspace_id: 'ws-apex-001',
+    name: 'Warm LED Fairy String Lights (100m Commercial Reel)',
+    category: 'Lighting & Electrical',
+    sku: 'LIGHT-STR-100',
+    total_quantity: 40,
+    available_quantity: 0,
+    reserved_quantity: 40,
+    min_stock_level: 8,
+    rental_rate_per_day: 45.0,
+    unit: 'sets',
+    location: 'Electrical Cage 2',
+    notes: 'All 40 reels booked for reception canopy lighting.',
+    created_at: subDays(today, 30).toISOString(),
+    updated_at: today.toISOString(),
+  },
+  {
+    id: 'inv-005',
+    workspace_id: 'ws-apex-001',
+    name: 'Royal Red Carpet Runner (50x6 ft)',
+    category: 'Flooring & Carpets',
+    sku: 'FLR-CRP-RED50',
+    total_quantity: 25,
+    available_quantity: 18,
+    reserved_quantity: 7,
+    min_stock_level: 5,
+    rental_rate_per_day: 80.0,
+    unit: 'rolls',
+    location: 'Carpet Loft 1',
+    notes: 'Cleaned and vacuum-sealed after each rental.',
+    created_at: subDays(today, 90).toISOString(),
+    updated_at: subDays(today, 10).toISOString(),
+  },
+  {
+    id: 'inv-006',
+    workspace_id: 'ws-apex-001',
+    name: 'Round Banquet Dining Tables (60-inch)',
+    category: 'Seating & Tables',
+    sku: 'SEAT-TBL-60',
+    total_quantity: 40,
+    available_quantity: 22,
+    reserved_quantity: 18,
+    min_stock_level: 10,
+    rental_rate_per_day: 18.0,
+    unit: 'units',
+    location: 'Table Storage D',
+    notes: 'Seats 8-10 people. Heavy duty folding wood core.',
+    created_at: subDays(today, 45).toISOString(),
+    updated_at: subDays(today, 5).toISOString(),
+  },
+  {
+    id: 'inv-007',
+    workspace_id: 'ws-apex-001',
+    name: 'Portable PA Sound System & Dual Wireless Mics',
+    category: 'Sound & Audio',
+    sku: 'SND-PA-SYS01',
+    total_quantity: 8,
+    available_quantity: 1,
+    reserved_quantity: 7,
+    min_stock_level: 3,
+    rental_rate_per_day: 150.0,
+    unit: 'sets',
+    location: 'AV Room Shelf 1',
+    notes: 'Includes 2x JBL active speakers, mixer, and wireless Shure mics.',
+    created_at: subDays(today, 30).toISOString(),
+    updated_at: subDays(today, 4).toISOString(),
+  },
+];
+
 /**
  * LocalStorage repository manager: loads or initializes seed data,
  * providing deterministic local workspace isolation.
@@ -507,6 +630,34 @@ class LocalStorageRepository {
     this.set('communication_logs', logs);
   }
 
+  // Inventory
+  getInventory(workspaceId?: string): InventoryItem[] {
+    const all = this.get<InventoryItem[]>('inventory', INITIAL_INVENTORY);
+    return workspaceId ? all.filter((i) => i.workspace_id === workspaceId) : all;
+  }
+  getInventoryItem(id: string): InventoryItem | undefined {
+    const all = this.getInventory();
+    return all.find((i) => i.id === id);
+  }
+  saveInventory(items: InventoryItem[]): void {
+    this.set('inventory', items);
+  }
+  updateInventoryItem(id: string, updates: Partial<InventoryItem>): InventoryItem {
+    const all = this.getInventory();
+    const index = all.findIndex((i) => i.id === id);
+    if (index === -1) {
+      throw new Error(`Inventory item ${id} not found`);
+    }
+    const updated: InventoryItem = {
+      ...all[index],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    all[index] = updated;
+    this.saveInventory(all);
+    return updated;
+  }
+
   // Reset to initial seed state
   resetAll(): void {
     this.set('workspace', INITIAL_WORKSPACE);
@@ -518,6 +669,7 @@ class LocalStorageRepository {
     this.set('invoices', INITIAL_INVOICES);
     this.set('payments', INITIAL_PAYMENTS);
     this.set('communication_logs', INITIAL_COMMUNICATION_LOGS);
+    this.set('inventory', INITIAL_INVENTORY);
   }
 }
 

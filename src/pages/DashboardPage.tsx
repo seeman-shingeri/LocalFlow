@@ -5,6 +5,7 @@ import { followUpService } from '@/services/followUpService';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { FollowUpsDueWidget } from '@/components/dashboard/FollowUpsDueWidget';
+import { LowStockAlertWidget } from '@/components/dashboard/LowStockAlertWidget';
 import { formatCurrency } from '@/lib/utils';
 import {
   Users,
@@ -220,6 +221,14 @@ export const DashboardPage: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Low-Stock Inventory Alerts for Event & Shamiyana Rentals */}
+      {currentWorkspace && (
+        <LowStockAlertWidget
+          workspaceId={currentWorkspace.id}
+          onStockUpdated={loadDashboardData}
+        />
+      )}
 
       {/* Secondary Row: Pipeline Stage Breakdown & Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

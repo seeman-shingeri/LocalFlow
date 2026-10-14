@@ -176,3 +176,24 @@ export interface AIUsageLog {
   tokens_used: number;
   created_at: string;
 }
+
+export type InventoryStockStatus = 'in_stock' | 'low_stock' | 'out_of_stock';
+
+export interface InventoryItem {
+  id: string;
+  workspace_id: string;
+  name: string;
+  category: string;
+  sku: string;
+  total_quantity: number;
+  available_quantity: number;
+  reserved_quantity: number;
+  min_stock_level: number;
+  rental_rate_per_day: number;
+  unit: string;
+  location: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
