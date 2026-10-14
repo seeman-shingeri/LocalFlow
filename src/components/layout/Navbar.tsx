@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Menu, LogOut, Building, User, Plus, Sparkles, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Menu, LogOut, Building, User, Plus, Sparkles, CheckCircle2, Search } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { Button } from '@/components/ui/Button';
 import { Link, useNavigate } from 'react-router-dom';
+import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
 
 interface NavbarProps {
   onToggleMobileMenu: () => void;
@@ -15,7 +16,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenQuickA
   const { currentWorkspace } = useWorkspace();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Global Ctrl+K / Cmd+K listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchModalOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -53,7 +67,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenQuickA
         </div>
       </div>
 
+      {/* Global Search Bar (Center) */}
+      <button
+        type="button"
+        onClick={() => setSearchModalOpen(true)}
+        className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/90 bg-slate-50/80 hover:bg-slate-100/90 text-xs text-slate-500 hover:text-slate-800 transition-all w-60 lg:w-80 justify-between shadow-2xs group"
+      >
+        <div className="flex items-center gap-2 truncate">
+          <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors shrink-0" />
+          <span className="truncate">Search equipment, customers, invoices...</span>
+        </div>
+        <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 shadow-2xs shrink-0">
+          Ctrl K
+        </kbd>
+      </button>
+
       <div className="flex items-center gap-3">
+        {/* Mobile Search Button */}
+        <button
+          type="button"
+          onClick={() => setSearchModalOpen(true)}
+          className="flex md:hidden h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
+          title="Search"
+        >
+          <Search className="w-4 h-4" />
+        </button>
         {/* AI Quick Assistant Pill */}
         <Link
           to="/ai-assistant"
@@ -107,6 +145,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenQuickA
           )}
         </div>
       </div>
+
+      {/* Global Search & Command Modal */}
+      <GlobalSearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
     </header>
   );
 };

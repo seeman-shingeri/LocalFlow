@@ -179,8 +179,26 @@
 
 ---
 
-## 9. Unresolved Issues & Production Readiness Notes
-- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`34/34` tests across 6 test suites), and Vite production builds pass cleanly with zero warnings or errors.
+## 9. Global Search and Cross-Entity Filters (October 14, 2026)
+- **Scope & Enhancements**:
+  1. **Global Search Service (`src/services/searchService.ts`)**: Implemented cross-entity search across customers, shamiyana & event rental inventory, invoices, enquiries, and appointment bookings with category filtering.
+  2. **Command Palette & Search Modal (`src/components/search/GlobalSearchModal.tsx`)**: Instant keyboard-driven search modal with filter tabs (`All`, `Shamiyana / Inventory`, `Customers`, `Invoices`, `Enquiries`, `Bookings`), live arrow-key navigation, entity badges, and 1-click navigation.
+  3. **Navbar Integration & Shortcuts (`src/components/layout/Navbar.tsx`)**: Added global `Ctrl+K` / `Cmd+K` hotkey listener and central search bar with desktop shortcut pill and mobile search trigger.
+  4. **Unit Tests (`src/test/globalSearch.test.ts`)**: 6 unit tests covering multi-attribute search, type filtering, case-insensitivity, and empty query safety.
+- **Files Changed**:
+  - `src/services/searchService.ts`
+  - `src/components/search/GlobalSearchModal.tsx`
+  - `src/components/layout/Navbar.tsx`
+  - `src/test/globalSearch.test.ts`
+- **Tests / Checks Executed**:
+  - `npm test` — Passed (`7` test files, `40` tests passed)
+  - `npx tsc --noEmit` — Passed (`0` errors)
+  - `npm run build` — Passed (all chunks bundled cleanly in ~15s)
+
+---
+
+## 10. Unresolved Issues & Production Readiness Notes
+- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`40/40` tests across 7 test suites), and Vite production builds pass cleanly with zero warnings or errors.
 - **External Environment Configuration**:
   - Running against a live cloud Supabase PostgreSQL instance requires populating `.env` (from `.env.example`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and executing `supabase/schema.sql` in the Supabase SQL Editor. When omitted, LocalFlow AI automatically runs in full-featured local persistence mode (`localStorageDb`).
   - Live LLM generation requires `VITE_GEMINI_API_KEY` in `.env` (or a Supabase Edge Function proxy for multi-user production); when omitted, `aiService` uses its verified deterministic business-data engine and structured templates.
