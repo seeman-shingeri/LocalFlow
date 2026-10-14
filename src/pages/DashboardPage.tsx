@@ -6,6 +6,7 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { FollowUpsDueWidget } from '@/components/dashboard/FollowUpsDueWidget';
 import { LowStockAlertWidget } from '@/components/dashboard/LowStockAlertWidget';
+import { InventoryRevenueSummaryWidget } from '@/components/dashboard/InventoryRevenueSummaryWidget';
 import { formatCurrency } from '@/lib/utils';
 import {
   Users,
@@ -226,6 +227,15 @@ export const DashboardPage: React.FC = () => {
       {currentWorkspace && (
         <LowStockAlertWidget
           workspaceId={currentWorkspace.id}
+          onStockUpdated={loadDashboardData}
+        />
+      )}
+
+      {/* Inventory Fleet & Rental Revenue Summary */}
+      {currentWorkspace && (
+        <InventoryRevenueSummaryWidget
+          workspaceId={currentWorkspace.id}
+          currency={currentWorkspace.currency}
           onStockUpdated={loadDashboardData}
         />
       )}
