@@ -20,7 +20,10 @@ import {
   CheckCircle2,
   Calendar,
   Filter,
+  Copy,
+  Check,
 } from 'lucide-react';
+import { generateInvoiceReminderMessage } from '@/lib/paymentReminderEngine';
 
 interface OutstandingPaymentTrackerProps {
   invoices: Invoice[];
@@ -36,8 +39,23 @@ export const OutstandingPaymentTracker: React.FC<OutstandingPaymentTrackerProps>
   onViewCustomer,
 }) => {
   const [filterBucket, setFilterBucket] = useState<'all' | 'overdue_all' | AgingBucket>('all');
+  const [copiedInvoiceId, setCopiedInvoiceId] = useState<string | null>(null);
 
   const report: OutstandingAgingReport = calculateOutstandingAging(invoices);
+
+  const handleCopyReminder = (item: OutstandingInvoiceItem) => {
+    const notice = generateInvoiceReminderMessage({
+      invoice: item.invoice,
+      customer: item.invoice.customer,
+      daysOverdue: item.daysOverdue,
+      currency,
+    });
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(notice.body);
+    }
+    setCopiedInvoiceId(item.invoice.id);
+    setTimeout(() => setCopiedInvoiceId(null), 2500);
+  };
 
   const filteredItems = report.items.filter((item) => {
     if (filterBucket === 'all') return true;
@@ -207,7 +225,8 @@ export const OutstandingPaymentTracker: React.FC<OutstandingPaymentTrackerProps>
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredItems.map(({ invoice, daysOverdue, agingBucket }) => {
+          {filteredItems.map((item) => {
+            const { invoice, daysOverdue, agingBucket } = item;
             const isSevere = agingBucket === '30+';
             const isOverdue = daysOverdue > 0;
 
@@ -297,15 +316,39 @@ export const OutstandingPaymentTracker: React.FC<OutstandingPaymentTrackerProps>
                     </span>
                   </div>
 
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => onRecordPayment(invoice)}
-                    className="shrink-0"
-                  >
-                    <CreditCard className="w-3.5 h-3.5 mr-1.5" />
-                    Record Payment
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {isOverdue && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopyReminder(item)}
+                        className="shrink-0 text-slate-700 hover:text-indigo-600"
+                        title="Copy formatted overdue reminder notice to clipboard"
+                      >
+                        {copiedInvoiceId === invoice.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                            Copied!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 mr-1" />
+                            Copy Notice
+                          </>
+                        )}
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => onRecordPayment(invoice)}
+                      className="shrink-0"
+                    >
+                      <CreditCard className="w-3.5 h-3.5 mr-1.5" />
+                      Record Payment
+                    </Button>
+                  </div>
                 </div>
               </div>
             );
