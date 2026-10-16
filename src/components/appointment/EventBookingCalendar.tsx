@@ -27,9 +27,11 @@ import {
   XCircle,
   Edit,
   Trash2,
+  MessageSquare,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { generateBookingWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsappTemplates';
 
 export function getCalendarDaysForMonth(monthDate: Date): Date[] {
   const start = startOfWeek(startOfMonth(monthDate));
@@ -305,6 +307,20 @@ export const EventBookingCalendar: React.FC<EventBookingCalendarProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const msg = generateBookingWhatsAppMessage(apt, apt.customer);
+                        const url = buildWhatsAppUrl(apt.customer?.phone, msg);
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                      }}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors"
+                      title="Send WhatsApp event confirmation"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>WhatsApp</span>
+                    </button>
+
                     {isScheduled && (
                       <button
                         type="button"
