@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Ca
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { formatCurrency } from '@/lib/utils';
+import { downloadInventoryCsv } from '@/lib/inventoryExport';
 import {
   Layers,
   DollarSign,
@@ -23,6 +24,7 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
+  Download,
 } from 'lucide-react';
 
 interface InventoryRevenueSummaryWidgetProps {
@@ -36,10 +38,23 @@ export const InventoryRevenueSummaryWidget: React.FC<
 > = ({ workspaceId, currency = 'USD', onStockUpdated }) => {
   const [summary, setSummary] = useState<InventoryRevenueSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [itemModalOpen, setItemModalOpen] = useState(false);
+
+  const handleExportCsv = async () => {
+    try {
+      setExporting(true);
+      const items = await inventoryService.getAll(workspaceId);
+      downloadInventoryCsv(items);
+    } catch {
+      // ignore
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const loadSummary = async () => {
     setLoading(true);
@@ -125,6 +140,17 @@ export const InventoryRevenueSummaryWidget: React.FC<
                 ))}
               </select>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportCsv}
+              disabled={exporting || loading}
+              className="text-slate-600 hover:text-slate-900"
+            >
+              <Download className={`w-3.5 h-3.5 mr-1 ${exporting ? 'animate-bounce' : ''}`} />
+              Export CSV
+            </Button>
 
             <Button
               variant="outline"
