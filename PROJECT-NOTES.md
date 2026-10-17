@@ -215,9 +215,64 @@
 
 ---
 
-## 11. Unresolved Issues & Production Readiness Notes
-- **Unresolved Code/Test Issues**: None. All TypeScript checks (`tsc --noEmit`), Vitest suites (`43/43` tests across 8 test suites), and Vite production builds pass cleanly with zero warnings or errors.
+## 11. 50 Real Improvements Roadmap & Progress Tracker
+
+- [x] 01. Customer Phone Number E.164 Normalization & Validation Helper
+- [ ] 02. Enquiry Priority Score & Urgency Weighting Engine
+- [ ] 03. Invoice Due Date Quick Health Status Tagging
+- [ ] 04. Follow-Up Auto-Reschedule Snooze Helper
+- [ ] 05. Appointment Duration & Overlap Buffer Calculation
+- [ ] 06. Customer Duplicate Match Scoring Engine
+- [ ] 07. Business Workspace Currency Formatter with Locale Fallbacks
+- [ ] 08. CSV Import Column Auto-Mapper for Customer Migration
+- [ ] 09. Invoice Tax Breakdown & Multi-Rate Calculator
+- [ ] 10. Event Equipment Damage & Loss Fee Calculator
+- [ ] 11. Customer Activity Timeline Event Aggregator
+- [ ] 12. Enquiry Conversion Funnel Velocity Metric
+- [ ] 13. Payment Method Distribution Analytics Engine
+- [ ] 14. Equipment Daily Utilization Rate Forecast
+- [ ] 15. Appointment Status Transition Validator
+- [ ] 16. Customer Lifetime Value (CLV) & RFM Segmentation
+- [ ] 17. Multi-Day Rental Package Discount Tier Rule Engine
+- [ ] 18. Notification Preference Filter & Channel Dispatcher Utility
+- [ ] 19. Invoice PDF Filename Sanitizer & Metadata Generator
+- [ ] 20. Overdue Accounts Escalation Stage Labeler
+- [ ] 21. Business Operational Hours Conflict & Window Checker
+- [ ] 22. Search Query Tokenizer & Fuzzy Match Ranker
+- [ ] 23. Dashboard Period Range Date Interval Generator
+- [ ] 24. Customer Email Domain & Deliverability Validator
+- [ ] 25. Follow-Up Urgency Heat Score Calculator
+- [ ] 26. Inventory Reorder Quantity & Stock Replenishment Recommendation Engine
+- [ ] 27. Cash Flow Forecast Net Inflow / Outflow Projector
+- [ ] 28. Enquiry Status Pipeline Stage Reordering & Guard
+- [ ] 29. Customer Note Word Count & Key Sentiment / Tag Extractor
+- [ ] 30. Paginated Array Slicer with Bound Safety & Total Pages Helper
+- [ ] 31. Invoice Payment Progress Percentage Calculator & Status Badge Mapper
+- [ ] 32. Appointment iCalendar (.ics) File Export Generator
+- [ ] 33. Customer Address Geolocation / Google Maps Deep Link Builder
+- [ ] 34. Data Sanitizer & XSS Stripper for User Inputs
+- [ ] 35. Financial Audit Log Event Formatter
+- [ ] 36. Equipment Category Icon & Color Theme Resolver
+- [ ] 37. Workspace Subscription Plan Feature Gate Checker
+- [ ] 38. Lead Source Attribution ROI & Conversion Rate Aggregator
+- [ ] 39. Event Booking Duration Formatter & Humanizer
+- [ ] 40. Multi-Item Invoice Subtotal & Discount Line Recalculator
+- [ ] 41. Password Strength & Complexity Evaluator
+- [ ] 42. Customer Engagement Recency Score & Inactivity Alert
+- [ ] 43. Event Setup Checklist Template Generator
+- [ ] 44. Empty State Helper with Contextual Action Prompts
+- [ ] 45. LocalStorage Schema Versioning & Safe Migration Guard
+- [ ] 46. Error Boundary Message Sanitizer & Safe Fallback Generator
+- [ ] 47. Quick SMS Message Template Formatter for Client Reminders
+- [ ] 48. Overdue Follow-Up Badge Counter & Threshold Indicator
+- [ ] 49. JSON Business Backup Export Validator & Generator
+- [ ] 50. Onboarding Setup Checklist Completion Calculator
+
+---
+
+## 12. Unresolved Issues & Production Readiness Notes
+- **Unresolved Code/Test Issues**: None. All tests passing cleanly.
 - **External Environment Configuration**:
-  - Running against a live cloud Supabase PostgreSQL instance requires populating `.env` (from `.env.example`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and executing `supabase/schema.sql` in the Supabase SQL Editor. When omitted, LocalFlow AI automatically runs in full-featured local persistence mode (`localStorageDb`).
-  - Live LLM generation requires `VITE_GEMINI_API_KEY` in `.env` (or a Supabase Edge Function proxy for multi-user production); when omitted, `aiService` uses its verified deterministic business-data engine and structured templates.
+  - Cloud Supabase instance supported via `.env` credentials (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+  - Seamless fallback to `localStorageDb` when cloud credentials are omitted.
 
