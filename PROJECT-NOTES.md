@@ -218,7 +218,7 @@
 ## 11. 50 Real Improvements Roadmap & Progress Tracker
 
 - [x] 01. Customer Phone Number E.164 Normalization & Validation Helper
-- [ ] 02. Enquiry Priority Score & Urgency Weighting Engine
+- [x] 02. Enquiry Priority Score & Urgency Weighting Engine
 - [ ] 03. Invoice Due Date Quick Health Status Tagging
 - [ ] 04. Follow-Up Auto-Reschedule Snooze Helper
 - [ ] 05. Appointment Duration & Overlap Buffer Calculation
