@@ -222,7 +222,7 @@
 - [x] 03. Invoice Due Date Quick Health Status Tagging
 - [x] 04. Follow-Up Auto-Reschedule Snooze Helper
 - [x] 05. Appointment Duration & Overlap Buffer Calculation
-- [ ] 06. Customer Duplicate Match Scoring Engine
+- [x] 06. Customer Duplicate Match Scoring Engine
 - [ ] 07. Business Workspace Currency Formatter with Locale Fallbacks
 - [ ] 08. CSV Import Column Auto-Mapper for Customer Migration
 - [ ] 09. Invoice Tax Breakdown & Multi-Rate Calculator
