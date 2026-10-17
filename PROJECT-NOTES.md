@@ -221,7 +221,7 @@
 - [x] 02. Enquiry Priority Score & Urgency Weighting Engine
 - [x] 03. Invoice Due Date Quick Health Status Tagging
 - [x] 04. Follow-Up Auto-Reschedule Snooze Helper
-- [ ] 05. Appointment Duration & Overlap Buffer Calculation
+- [x] 05. Appointment Duration & Overlap Buffer Calculation
 - [ ] 06. Customer Duplicate Match Scoring Engine
 - [ ] 07. Business Workspace Currency Formatter with Locale Fallbacks
 - [ ] 08. CSV Import Column Auto-Mapper for Customer Migration
