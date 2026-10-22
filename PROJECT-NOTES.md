@@ -236,7 +236,7 @@
 - [x] 17. Multi-Day Rental Package Discount Tier Rule Engine
 - [x] 18. Notification Preference Filter & Channel Dispatcher Utility
 - [x] 19. Invoice PDF Filename Sanitizer & Metadata Generator
-- [ ] 20. Overdue Accounts Escalation Stage Labeler
+- [x] 20. Overdue Accounts Escalation Stage Labeler
 - [ ] 21. Business Operational Hours Conflict & Window Checker
 - [ ] 22. Search Query Tokenizer & Fuzzy Match Ranker
 - [ ] 23. Dashboard Period Range Date Interval Generator
