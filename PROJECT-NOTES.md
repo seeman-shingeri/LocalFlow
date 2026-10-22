@@ -228,7 +228,7 @@
 - [x] 09. Invoice Tax Breakdown & Multi-Rate Calculator
 - [x] 10. Event Equipment Damage & Loss Fee Calculator
 - [x] 11. Customer Activity Timeline Event Aggregator
-- [ ] 12. Enquiry Conversion Funnel Velocity Metric
+- [x] 12. Enquiry Conversion Funnel Velocity Metric
 - [ ] 13. Payment Method Distribution Analytics Engine
 - [ ] 14. Equipment Daily Utilization Rate Forecast
 - [ ] 15. Appointment Status Transition Validator
