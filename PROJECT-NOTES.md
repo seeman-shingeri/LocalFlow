@@ -225,7 +225,7 @@
 - [x] 06. Customer Duplicate Match Scoring Engine
 - [x] 07. Business Workspace Currency Formatter with Locale Fallbacks
 - [x] 08. CSV Import Column Auto-Mapper for Customer Migration
-- [ ] 09. Invoice Tax Breakdown & Multi-Rate Calculator
+- [x] 09. Invoice Tax Breakdown & Multi-Rate Calculator
 - [ ] 10. Event Equipment Damage & Loss Fee Calculator
 - [ ] 11. Customer Activity Timeline Event Aggregator
 - [ ] 12. Enquiry Conversion Funnel Velocity Metric
