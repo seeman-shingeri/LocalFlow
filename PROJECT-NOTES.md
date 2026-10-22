@@ -233,7 +233,7 @@
 - [x] 14. Equipment Daily Utilization Rate Forecast
 - [x] 15. Appointment Status Transition Validator
 - [x] 16. Customer Lifetime Value (CLV) & RFM Segmentation
-- [ ] 17. Multi-Day Rental Package Discount Tier Rule Engine
+- [x] 17. Multi-Day Rental Package Discount Tier Rule Engine
 - [ ] 18. Notification Preference Filter & Channel Dispatcher Utility
 - [ ] 19. Invoice PDF Filename Sanitizer & Metadata Generator
 - [ ] 20. Overdue Accounts Escalation Stage Labeler
