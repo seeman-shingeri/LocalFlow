@@ -238,7 +238,7 @@
 - [x] 19. Invoice PDF Filename Sanitizer & Metadata Generator
 - [x] 20. Overdue Accounts Escalation Stage Labeler
 - [x] 21. Business Operational Hours Conflict & Window Checker
-- [ ] 22. Search Query Tokenizer & Fuzzy Match Ranker
+- [x] 22. Search Query Tokenizer & Fuzzy Match Ranker
 - [ ] 23. Dashboard Period Range Date Interval Generator
 - [ ] 24. Customer Email Domain & Deliverability Validator
 - [ ] 25. Follow-Up Urgency Heat Score Calculator
