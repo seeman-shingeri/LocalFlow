@@ -252,7 +252,7 @@
 - [x] 33. Customer Address Geolocation / Google Maps Deep Link Builder
 - [x] 34. Data Sanitizer & XSS Stripper for User Inputs
 - [x] 35. Financial Audit Log Event Formatter
-- [ ] 36. Equipment Category Icon & Color Theme Resolver
+- [x] 36. Equipment Category Icon & Color Theme Resolver
 - [ ] 37. Workspace Subscription Plan Feature Gate Checker
 - [ ] 38. Lead Source Attribution ROI & Conversion Rate Aggregator
 - [ ] 39. Event Booking Duration Formatter & Humanizer
