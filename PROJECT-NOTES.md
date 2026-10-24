@@ -248,7 +248,7 @@
 - [x] 29. Customer Note Word Count & Key Sentiment / Tag Extractor
 - [x] 30. Paginated Array Slicer with Bound Safety & Total Pages Helper
 - [x] 31. Invoice Payment Progress Percentage Calculator & Status Badge Mapper
-- [ ] 32. Appointment iCalendar (.ics) File Export Generator
+- [x] 32. Appointment iCalendar (.ics) File Export Generator
 - [ ] 33. Customer Address Geolocation / Google Maps Deep Link Builder
 - [ ] 34. Data Sanitizer & XSS Stripper for User Inputs
 - [ ] 35. Financial Audit Log Event Formatter
