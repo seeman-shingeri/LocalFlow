@@ -259,7 +259,7 @@
 - [x] 40. Multi-Item Invoice Subtotal & Discount Line Recalculator
 - [x] 41. Password Strength & Complexity Evaluator
 - [x] 42. Customer Engagement Recency Score & Inactivity Alert
-- [ ] 43. Event Setup Checklist Template Generator
+- [x] 43. Event Setup Checklist Template Generator
 - [ ] 44. Empty State Helper with Contextual Action Prompts
 - [ ] 45. LocalStorage Schema Versioning & Safe Migration Guard
 - [ ] 46. Error Boundary Message Sanitizer & Safe Fallback Generator
