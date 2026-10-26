@@ -256,7 +256,7 @@
 - [x] 37. Workspace Subscription Plan Feature Gate Checker
 - [x] 38. Lead Source Attribution ROI & Conversion Rate Aggregator
 - [x] 39. Event Booking Duration Formatter & Humanizer
-- [ ] 40. Multi-Item Invoice Subtotal & Discount Line Recalculator
+- [x] 40. Multi-Item Invoice Subtotal & Discount Line Recalculator
 - [ ] 41. Password Strength & Complexity Evaluator
 - [ ] 42. Customer Engagement Recency Score & Inactivity Alert
 - [ ] 43. Event Setup Checklist Template Generator
