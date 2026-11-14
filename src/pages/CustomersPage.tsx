@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Customer } from '@/types/database';
 import { customerService, CustomerWithRelations } from '@/services/customerService';
 import { useWorkspace } from '@/context/WorkspaceContext';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
@@ -29,6 +30,7 @@ export const CustomersPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +47,7 @@ export const CustomersPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await customerService.getAll(currentWorkspace.id, {
-        search: search.trim() || undefined,
+        search: debouncedSearch.trim() || undefined,
         status: statusFilter,
       });
       setCustomers(data);
@@ -58,7 +60,7 @@ export const CustomersPage: React.FC = () => {
 
   useEffect(() => {
     loadCustomers();
-  }, [currentWorkspace, search, statusFilter]);
+  }, [currentWorkspace, debouncedSearch, statusFilter]);
 
   const handleConfirmDelete = async () => {
     if (!deleteCustomerTarget || !currentWorkspace) return;
