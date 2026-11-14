@@ -284,7 +284,7 @@
 - [x] 01. Database Query Optimization — In-flight query coalescing, ID chunking, selective projection, and targeted duplicate search (`src/lib/queryOptimizer.ts`)
 - [x] 02. Smart Dashboard Caching — TTL-based stale-while-revalidate metrics cache (`src/lib/dashboardCache.ts`)
 - [x] 03. Duplicate Request Prevention — Idempotency guards and in-flight mutation deduplication (`src/lib/idempotencyGuard.ts`)
-- [ ] 04. Global Error Boundary — React error boundary with incident capture and safe recovery UI (`src/components/common/GlobalErrorBoundary.tsx`)
+- [x] 04. Global Error Boundary — React error boundary with incident capture and safe recovery UI (`src/components/common/GlobalErrorBoundary.tsx`)
 - [ ] 05. Advanced Row Level Security Audit — Workspace isolation verification suite (`src/lib/rlsAudit.ts`)
 - [ ] 06. Debounced Search Hook — Input throttling to prevent excessive database calls (`src/hooks/useDebounce.ts`)
 - [ ] 07. Realtime Connection Recovery — Subscription heartbeat and exponential backoff reconnect (`src/lib/realtimeRecovery.ts`)

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { WorkspaceProvider } from '@/context/WorkspaceContext';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { GlobalErrorBoundary } from '@/components/common/GlobalErrorBoundary';
 import { Loader2 } from 'lucide-react';
 
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })));
@@ -57,38 +58,40 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <WorkspaceProvider>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public Auth Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <GlobalErrorBoundary>
+        <AuthProvider>
+          <WorkspaceProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public Auth Routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-              {/* Protected App Routes */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardPage />} />
-                <Route path="customers" element={<CustomersPage />} />
-                <Route path="enquiries" element={<EnquiriesPage />} />
-                <Route path="follow-ups" element={<FollowUpsPage />} />
-                <Route path="appointments" element={<AppointmentsPage />} />
-                <Route path="invoices" element={<InvoicesPage />} />
-                <Route path="ai-assistant" element={<AIAssistantPage />} />
-                <Route path="settings" element={<SettingsPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
-            </Routes>
-          </Suspense>
-        </WorkspaceProvider>
-      </AuthProvider>
+                {/* Protected App Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<DashboardPage />} />
+                  <Route path="customers" element={<CustomersPage />} />
+                  <Route path="enquiries" element={<EnquiriesPage />} />
+                  <Route path="follow-ups" element={<FollowUpsPage />} />
+                  <Route path="appointments" element={<AppointmentsPage />} />
+                  <Route path="invoices" element={<InvoicesPage />} />
+                  <Route path="ai-assistant" element={<AIAssistantPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </WorkspaceProvider>
+        </AuthProvider>
+      </GlobalErrorBoundary>
     </BrowserRouter>
   );
 };
