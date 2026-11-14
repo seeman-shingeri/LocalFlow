@@ -1,6 +1,7 @@
 import { Customer, Enquiry, Appointment, Invoice, Payment, CommunicationLog } from '@/types/database';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { localDb } from '@/lib/localStorageDb';
+import { coalesceQuery } from '@/lib/queryOptimizer';
 
 export interface CustomerWithRelations extends Customer {
   enquiries: Enquiry[];
@@ -12,34 +13,37 @@ export interface CustomerWithRelations extends Customer {
 
 export const customerService = {
   async getAll(workspaceId: string, filter?: { search?: string; status?: string }): Promise<Customer[]> {
-    if (isSupabaseConfigured && supabase) {
-      let query = supabase.from('customers').select('*').eq('workspace_id', workspaceId);
-      if (filter?.status && filter.status !== 'all') {
-        query = query.eq('status', filter.status);
+    const queryKey = `customers:${workspaceId}:${filter?.status || 'all'}:${filter?.search || ''}`;
+    return coalesceQuery(queryKey, async () => {
+      if (isSupabaseConfigured && supabase) {
+        let query = supabase.from('customers').select('*').eq('workspace_id', workspaceId);
+        if (filter?.status && filter.status !== 'all') {
+          query = query.eq('status', filter.status);
+        }
+        if (filter?.search) {
+          query = query.or(`name.ilike.%${filter.search}%,email.ilike.%${filter.search}%,phone.ilike.%${filter.search}%`);
+        }
+        query = query.order('created_at', { ascending: false });
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+      } else {
+        let customers = localDb.getCustomers(workspaceId);
+        if (filter?.status && filter.status !== 'all') {
+          customers = customers.filter((c) => c.status === filter.status);
+        }
+        if (filter?.search) {
+          const s = filter.search.toLowerCase();
+          customers = customers.filter(
+            (c) =>
+              c.name.toLowerCase().includes(s) ||
+              (c.email && c.email.toLowerCase().includes(s)) ||
+              (c.phone && c.phone.toLowerCase().includes(s))
+          );
+        }
+        return customers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       }
-      if (filter?.search) {
-        query = query.or(`name.ilike.%${filter.search}%,email.ilike.%${filter.search}%,phone.ilike.%${filter.search}%`);
-      }
-      query = query.order('created_at', { ascending: false });
-      const { data, error } = await query;
-      if (error) throw error;
-      return data || [];
-    } else {
-      let customers = localDb.getCustomers(workspaceId);
-      if (filter?.status && filter.status !== 'all') {
-        customers = customers.filter((c) => c.status === filter.status);
-      }
-      if (filter?.search) {
-        const s = filter.search.toLowerCase();
-        customers = customers.filter(
-          (c) =>
-            c.name.toLowerCase().includes(s) ||
-            (c.email && c.email.toLowerCase().includes(s)) ||
-            (c.phone && c.phone.toLowerCase().includes(s))
-        );
-      }
-      return customers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
+    });
   },
 
   async getById(id: string, workspaceId: string): Promise<CustomerWithRelations | null> {
@@ -92,13 +96,33 @@ export const customerService = {
 
   async checkDuplicate(workspaceId: string, email?: string, phone?: string, excludeId?: string): Promise<Customer | null> {
     if (!email && !phone) return null;
-    const all = await this.getAll(workspaceId);
-    return all.find((c) => {
-      if (excludeId && c.id === excludeId) return false;
-      const emailMatch = email && c.email && c.email.trim().toLowerCase() === email.trim().toLowerCase();
-      const phoneMatch = phone && c.phone && c.phone.replace(/\D/g, '') === phone.replace(/\D/g, '');
-      return emailMatch || phoneMatch;
-    }) || null;
+    const cleanEmail = email?.trim().toLowerCase();
+    const cleanPhoneDigits = phone ? phone.replace(/\D/g, '') : undefined;
+
+    if (isSupabaseConfigured && supabase) {
+      let query = supabase.from('customers').select('*').eq('workspace_id', workspaceId);
+      if (excludeId) query = query.neq('id', excludeId);
+      const orClauses: string[] = [];
+      if (cleanEmail) orClauses.push(`email.ilike.${cleanEmail}`);
+      if (cleanPhoneDigits) orClauses.push(`phone.ilike.%${cleanPhoneDigits}%`);
+      if (orClauses.length > 0) {
+        query = query.or(orClauses.join(','));
+      }
+      const { data, error } = await query.limit(1);
+      if (!error && data && data.length > 0) {
+        return data[0];
+      }
+      return null;
+    } else {
+      // LocalDB: direct predicate search without sorting full customer registry
+      const customers = localDb.getCustomers(workspaceId);
+      return customers.find((c) => {
+        if (excludeId && c.id === excludeId) return false;
+        const emailMatch = cleanEmail && c.email && c.email.trim().toLowerCase() === cleanEmail;
+        const phoneMatch = cleanPhoneDigits && c.phone && c.phone.replace(/\D/g, '') === cleanPhoneDigits;
+        return emailMatch || phoneMatch;
+      }) || null;
+    }
   },
 
   async create(customerData: Omit<Customer, 'id' | 'created_at' | 'updated_at'>): Promise<Customer> {
