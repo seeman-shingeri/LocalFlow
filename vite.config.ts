@@ -11,13 +11,16 @@ export default defineConfig({
     },
   },
   build: {
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'charts-vendor': ['recharts'],
           'supabase-vendor': ['@supabase/supabase-js'],
-          'ui-vendor': ['lucide-react', 'date-fns', 'clsx', 'tailwind-merge'],
+          'date-vendor': ['date-fns'],
+          'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
         },
       },
     },
