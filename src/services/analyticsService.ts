@@ -6,6 +6,7 @@ import { invoiceService } from './invoiceService';
 import { paymentService } from './paymentService';
 import { isDateOverdue, isDateToday } from '@/lib/utils';
 import { parseISO, subDays, isAfter, startOfDay, format } from 'date-fns';
+import { dashboardCache } from '@/lib/dashboardCache';
 
 export interface DashboardMetrics {
   totalCustomers: number;
@@ -36,7 +37,18 @@ export interface DashboardMetrics {
 }
 
 export const analyticsService = {
-  async getDashboardMetrics(workspaceId: string, daysPeriod: number = 30): Promise<DashboardMetrics> {
+  async getDashboardMetrics(
+    workspaceId: string,
+    daysPeriod: number = 30,
+    options?: { forceRefresh?: boolean }
+  ): Promise<DashboardMetrics> {
+    if (!options?.forceRefresh) {
+      const cached = dashboardCache.get<DashboardMetrics>(workspaceId, daysPeriod);
+      if (cached.status === 'fresh' && cached.data) {
+        return cached.data;
+      }
+    }
+
     const [
       customers,
       enquiries,
@@ -172,7 +184,7 @@ export const analyticsService = {
 
     recentActivity.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-    return {
+    const metrics: DashboardMetrics = {
       totalCustomers,
       newEnquiriesCount,
       activeEnquiriesValue: Math.round(activeEnquiriesValue * 100) / 100,
@@ -187,5 +199,12 @@ export const analyticsService = {
       revenueChartData,
       enquiryFunnelData,
     };
+
+    dashboardCache.set(workspaceId, daysPeriod, metrics);
+    return metrics;
+  },
+
+  invalidateCache(workspaceId: string): void {
+    dashboardCache.invalidateWorkspace(workspaceId);
   },
 };
