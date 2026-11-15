@@ -67,7 +67,7 @@ export function verifyTenantMembership(
 /**
  * Validates that an insert/update payload contains a valid workspace_id matching the active workspace.
  */
-export function validatePayloadWorkspace<T extends { workspace_id?: string }>(
+export function validatePayloadWorkspace<T extends { workspace_id?: string; [key: string]: any }>(
   payload: T,
   expectedWorkspaceId: string
 ): { isValid: boolean; error?: string } {

@@ -26,9 +26,12 @@ describe('Enterprise Automated Regression Test Suite (enterpriseRegression)', ()
       name: 'Priya Sharma Events',
       email: 'priya@sharmaevents.in',
       phone: '+919876543210',
+      address: 'Bengaluru',
+      notes: 'VIP Wedding Client',
       status: 'active',
       source: 'referral',
-      tags: ['vip', 'wedding'],
+      last_contact_date: null,
+      next_follow_up_date: null,
     });
 
     expect(customer.id).toBeDefined();
@@ -45,30 +48,24 @@ describe('Enterprise Automated Regression Test Suite (enterpriseRegression)', ()
     expect(calculation.itemsTaxTotal).toBe(14400);
     expect(calculation.grandTotal).toBe(94400);
 
+    const invoiceNumber = await invoiceService.getNextInvoiceNumber(WORKSPACE_A);
     const invoice = await invoiceService.create({
       workspace_id: WORKSPACE_A,
       customer_id: customer.id,
-      customer_name: customer.name,
+      invoice_number: invoiceNumber,
       issue_date: '2026-11-01',
       due_date: '2026-11-15',
-      subtotal: calculation.itemsGrossSubtotal,
       tax_rate: 18,
-      tax_amount: calculation.itemsTaxTotal,
-      total_amount: calculation.grandTotal,
       items: [
         {
-          id: 'item-1',
           description: lineItems[0].description,
           quantity: lineItems[0].quantity,
           unit_price: lineItems[0].unitPrice,
-          total_price: 60000,
         },
         {
-          id: 'item-2',
           description: lineItems[1].description,
           quantity: lineItems[1].quantity,
           unit_price: lineItems[1].unitPrice,
-          total_price: 20000,
         },
       ],
       notes: 'Initial wedding booking contract',
@@ -115,8 +112,8 @@ describe('Enterprise Automated Regression Test Suite (enterpriseRegression)', ()
       invoice_id: invoice.id,
       customer_id: customer.id,
       amount: 54400,
-      payment_method: 'upi',
-      transaction_reference: 'UPI-REG-1122',
+      payment_method: 'card',
+      transaction_reference: 'CARD-REG-1122',
     });
 
     expect(finalPay.id).toBeDefined();
@@ -137,18 +134,28 @@ describe('Enterprise Automated Regression Test Suite (enterpriseRegression)', ()
     const custA = await customerService.create({
       workspace_id: WORKSPACE_A,
       name: 'Workspace A Client',
+      email: null,
       phone: '+919999900001',
+      address: null,
+      notes: null,
       status: 'active',
       source: 'direct',
+      last_contact_date: null,
+      next_follow_up_date: null,
     });
 
     // Add customer to Workspace B
     const custB = await customerService.create({
       workspace_id: WORKSPACE_B,
       name: 'Workspace B Client',
+      email: null,
       phone: '+919999900002',
+      address: null,
+      notes: null,
       status: 'active',
       source: 'direct',
+      last_contact_date: null,
+      next_follow_up_date: null,
     });
 
     const listA = await customerService.getAll(WORKSPACE_A);
@@ -170,22 +177,25 @@ describe('Enterprise Automated Regression Test Suite (enterpriseRegression)', ()
     const cust = await customerService.create({
       workspace_id: WORKSPACE_A,
       name: 'Rapid Clicker Client',
+      email: null,
       phone: '+919888877777',
+      address: null,
+      notes: null,
       status: 'active',
       source: 'web',
+      last_contact_date: null,
+      next_follow_up_date: null,
     });
 
+    const invNumber2 = await invoiceService.getNextInvoiceNumber(WORKSPACE_A);
     const inv = await invoiceService.create({
       workspace_id: WORKSPACE_A,
       customer_id: cust.id,
-      customer_name: cust.name,
+      invoice_number: invNumber2,
       issue_date: '2026-11-01',
       due_date: '2026-11-10',
-      subtotal: 10000,
       tax_rate: 0,
-      tax_amount: 0,
-      total_amount: 10000,
-      items: [{ id: '1', description: 'Sound System', quantity: 1, unit_price: 10000, total_price: 10000 }],
+      items: [{ description: 'Sound System', quantity: 1, unit_price: 10000 }],
     });
 
     // Simulate 3 concurrent clicks on payment submission
