@@ -143,7 +143,7 @@ export const customerService = {
       const all = localDb.getCustomers();
       const newCust: Customer = {
         ...customerData,
-        id: `cust-${Date.now()}`,
+        id: `cust-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         created_at: now,
         updated_at: now,
       };
