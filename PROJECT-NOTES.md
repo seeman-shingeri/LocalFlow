@@ -330,8 +330,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **44** | **Automated Database Backup Strategy** | Backup snapshot validator, manifest generator, retention pruner | `src/lib/backupStrategy.ts` | S | **Completed** | 3 passed | `88fb896` | Verified |
 | **45** | **System Health Check Endpoint** | Multi-subsystem health probe (DB, Storage, Network, Memory) | `src/lib/healthChecker.ts` | S | **Completed** | 4 passed | `024da99` | Verified |
 | **46** | **CI Automated Testing Workflow** | GitHub Actions CI workflow running typecheck, tests, and build | `.github/workflows/ci.yml` | XS | **Completed** | 3 passed | `86ae6e3` | Verified |
-| **47** | **Deployment Smoke Tests** | Automated post-deploy smoke verification script for critical paths | `src/lib/smokeTestRunner.ts` | S | **Completed** | 2 passed | `[hash]` | Verified |
-| **48** | **Feature Flags Engine** | Lightweight client-side feature flagging with rollout percentages | `src/lib/featureFlags.ts` | S | Pending | - | - | - |
+| **47** | **Deployment Smoke Tests** | Automated post-deploy smoke verification script for critical paths | `src/lib/smokeTestRunner.ts` | S | **Completed** | 2 passed | `3c07e1d` | Verified |
+| **48** | **Feature Flags Engine** | Lightweight client-side feature flagging with rollout percentages | `src/lib/featureFlags.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
 | **49** | **Database Migration Safety Checks** | DDL migration linter for table locks, drop columns, missing indexes | `src/lib/migrationSafety.ts` | S | Pending | - | - | - |
 | **50** | **Production Readiness Audit** | End-to-end readiness evaluator (security, env, APM, HTTPS, error UI) | `src/lib/productionReadiness.ts` | S | Pending | - | - | - |
 
