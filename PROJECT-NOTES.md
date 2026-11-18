@@ -311,8 +311,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **25** | **Database Transaction Safety** | Multi-step mutation rollback coordinator and compensation engine | `src/lib/transactionCoordinator.ts` | S | **Completed** | 3 passed | `bd6dd96` | Verified |
 | **26** | **Form Data Preservation** | Auto-draft persistence in sessionStorage on typing/interruption | `src/lib/formDraftPreserver.ts` | XS | **Completed** | 4 passed | `1a3aa56` | Verified |
 | **27** | **Realtime Connection Recovery** | Supabase channel heartbeat and reconnection manager | `src/lib/realtimeRecovery.ts` | S | **Completed** | 4 passed | `fd233b3` | Verified |
-| **28** | **Graceful Loading States** | Configurable shimmer and skeleton layout generator | `src/lib/skeletonConfig.ts` | XS | **Completed** | 4 passed | `[hash]` | Verified |
-| **29** | **Data Integrity Checks** | Relational orphan record and payment-invoice balance consistency detector | `src/lib/dataIntegrity.ts` | S | Pending | - | - | - |
+| **28** | **Graceful Loading States** | Configurable shimmer and skeleton layout generator | `src/lib/skeletonConfig.ts` | XS | **Completed** | 4 passed | `a10013a` | Verified |
+| **29** | **Data Integrity Checks** | Relational orphan record and payment-invoice balance consistency detector | `src/lib/dataIntegrity.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
 | **30** | **Automated Regression Tests** | Multi-tenant lead-to-cash end-to-end regression suite | `src/test/enterpriseRegression.test.ts` | M | **Completed** | 3 passed | `7733e4f` | Verified |
 | **31** | **Consistent Design System** | Centralized design tokens (colors, typography, spacing, shadows) | `src/lib/designTokens.ts` | XS | Pending | - | - | - |
 | **32** | **Accessibility Audit** | Automated WCAG 2.1 AA color contrast and ARIA attribute auditor | `src/lib/a11yAuditor.ts` | S | Pending | - | - | - |
