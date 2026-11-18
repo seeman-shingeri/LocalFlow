@@ -295,8 +295,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **09** | **Background Data Refresh** | Silent background revalidation scheduler for non-critical data | `src/lib/backgroundRefresh.ts` | S | **Completed** | 5 passed | `c11fbae` | Verified |
 | **10** | **Memory Leak Prevention** | Automatic listener, timer, and subscription disposer registry | `src/lib/lifecycleManager.ts` | S | **Completed** | 5 passed | `9f9b88e` | Verified |
 | **11** | **Advanced RLS Security Audit** | Comprehensive tenant isolation & permission boundary verification | `src/lib/rlsAudit.ts`, `src/test/rlsAudit.test.ts` | S | **Completed** | 4 passed | `59424ba` | Verified |
-| **12** | **Secure API Validation** | Schema validation, type safety, and strict parameter enforcement | `src/lib/apiValidator.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
-| **13** | **Session Security Improvements** | Idle timeout detection, token expiry tracking, safe renewal | `src/lib/sessionSecurity.ts` | S | Pending | - | - | - |
+| **12** | **Secure API Validation** | Schema validation, type safety, and strict parameter enforcement | `src/lib/apiValidator.ts` | S | **Completed** | 4 passed | `25a282e` | Verified |
+| **13** | **Session Security Improvements** | Idle timeout detection, token expiry tracking, safe renewal | `src/lib/sessionSecurity.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
 | **14** | **Client Rate Limiting** | Token bucket rate limiter preventing API abuse and rapid clicks | `src/lib/rateLimiter.ts` | XS | Pending | - | - | - |
 | **15** | **Immutable Audit Logs** | Structured event logger capturing critical mutations and actor context | `src/lib/auditTrail.ts` | S | Pending | - | - | - |
 | **16** | **Sensitive Data Protection** | PII masking and redaction for logs and error diagnostics | `src/lib/piiMasker.ts` | XS | Pending | - | - | - |
