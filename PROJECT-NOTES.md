@@ -315,8 +315,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **29** | **Data Integrity Checks** | Relational orphan record and payment-invoice balance consistency detector | `src/lib/dataIntegrity.ts` | S | **Completed** | 4 passed | `90e83b7` | Verified |
 | **30** | **Automated Regression Tests** | Multi-tenant lead-to-cash end-to-end regression suite | `src/test/enterpriseRegression.test.ts` | M | **Completed** | 3 passed | `7733e4f` | Verified |
 | **31** | **Consistent Design System** | Centralized design tokens (colors, typography, spacing, shadows) | `src/lib/designTokens.ts` | XS | **Completed** | 3 passed | `36c84bd` | Verified |
-| **32** | **Accessibility Audit** | Automated WCAG 2.1 AA color contrast and ARIA attribute auditor | `src/lib/a11yAuditor.ts` | S | **Completed** | 5 passed | `[hash]` | Verified |
-| **33** | **Keyboard Shortcuts** | Centralized shortcut registry and key chord dispatcher | `src/lib/hotkeyManager.ts` | S | Pending | - | - | - |
+| **32** | **Accessibility Audit** | Automated WCAG 2.1 AA color contrast and ARIA attribute auditor | `src/lib/a11yAuditor.ts` | S | **Completed** | 5 passed | `55e5791` | Verified |
+| **33** | **Keyboard Shortcuts** | Centralized shortcut registry and key chord dispatcher | `src/lib/hotkeyManager.ts` | S | **Completed** | 5 passed | `[hash]` | Verified |
 | **34** | **Advanced Global Search** | Fuzzy multi-entity search with tokenization and relevance scoring | `src/lib/advancedSearch.ts` | S | Pending | - | - | - |
 | **35** | **Smart Empty States** | Adaptive onboarding calls-to-action based on business records | `src/lib/smartEmptyState.ts` | XS | Pending | - | - | - |
 | **36** | **Undo Critical Actions** | Command-pattern reversible undo/redo action history stack | `src/lib/undoHistory.ts` | S | Pending | - | - | - |
