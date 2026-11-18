@@ -298,8 +298,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **12** | **Secure API Validation** | Schema validation, type safety, and strict parameter enforcement | `src/lib/apiValidator.ts` | S | **Completed** | 4 passed | `25a282e` | Verified |
 | **13** | **Session Security Improvements** | Idle timeout detection, token expiry tracking, safe renewal | `src/lib/sessionSecurity.ts` | S | **Completed** | 4 passed | `de3c3cc` | Verified |
 | **14** | **Client Rate Limiting** | Token bucket rate limiter preventing API abuse and rapid clicks | `src/lib/rateLimiter.ts` | XS | **Completed** | 5 passed | `feed51f` | Verified |
-| **15** | **Immutable Audit Logs** | Structured event logger capturing critical mutations and actor context | `src/lib/auditTrail.ts` | S | **Completed** | 3 passed | `[hash]` | Verified |
-| **16** | **Sensitive Data Protection** | PII masking and redaction for logs and error diagnostics | `src/lib/piiMasker.ts` | XS | Pending | - | - | - |
+| **15** | **Immutable Audit Logs** | Structured event logger capturing critical mutations and actor context | `src/lib/auditTrail.ts` | S | **Completed** | 3 passed | `d393aa5` | Verified |
+| **16** | **Sensitive Data Protection** | PII masking and redaction for logs and error diagnostics | `src/lib/piiMasker.ts` | XS | **Completed** | 5 passed | `[hash]` | Verified |
 | **17** | **Input Sanitization** | Multi-layer XSS, HTML entity encode, and injection prevention | `src/lib/securitySanitizer.ts` | XS | Pending | - | - | - |
 | **18** | **Permission Boundary Testing** | Automated cross-workspace unauthorized access detection suite | `src/test/permissionBoundary.test.ts` | S | Pending | - | - | - |
 | **19** | **Secure Error Responses** | Prevents internal database details and stack traces leaking to users | `src/lib/secureError.ts` | XS | Pending | - | - | - |
