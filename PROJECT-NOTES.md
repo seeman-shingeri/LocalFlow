@@ -288,9 +288,9 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **02** | **Component & Resource Lazy Loading** | Dynamic preloading and deferred resource loading helper | `src/lib/lazyLoader.ts` | XS | **Completed** | 6 passed | `0df8f57` | Verified |
 | **03** | **Database Query Optimization** | In-flight single-flight query coalescing & targeted duplicate lookup | `src/lib/queryOptimizer.ts`, `src/services/customerService.ts` | S | **Completed** | 3 passed | `fe8c5b8` | Verified |
 | **04** | **Debounced Search** | Throttles high-frequency database calls while typing | `src/hooks/useDebounce.ts`, `src/pages/CustomersPage.tsx` | XS | **Completed** | 4 passed | `b14fec0` | Verified |
-| **05** | **Optimistic UI Updates** | Instant UI responsiveness with automatic rollback on network error | `src/lib/optimisticUpdate.ts` | S | **Completed** | 5 passed | `[hash]` | Verified |
+| **05** | **Optimistic UI Updates** | Instant UI responsiveness with automatic rollback on network error | `src/lib/optimisticUpdate.ts` | S | **Completed** | 5 passed | `5db8135` | Verified |
 | **06** | **Bundle Size Optimization** | Vendor chunk splitting & bundle budget auditor | `src/lib/bundleOptimizer.ts`, `vite.config.ts` | S | **Completed** | 4 passed | `def70cb` | Verified |
-| **07** | **Image Optimization** | Responsive picture helper, WebP detection, lazy load generator | `src/lib/imageOptimizer.ts` | XS | Pending | - | - | - |
+| **07** | **Image Optimization** | Responsive picture helper, WebP detection, lazy load generator | `src/lib/imageOptimizer.ts` | XS | **Completed** | 6 passed | `[hash]` | Verified |
 | **08** | **Pagination Optimization** | Cursor/keyset pagination calculator and slice optimizer | `src/lib/paginationOptimizer.ts` | XS | Pending | - | - | - |
 | **09** | **Background Data Refresh** | Silent background revalidation scheduler for non-critical data | `src/lib/backgroundRefresh.ts` | S | Pending | - | - | - |
 | **10** | **Memory Leak Prevention** | Automatic listener, timer, and subscription disposer registry | `src/lib/lifecycleManager.ts` | S | Pending | - | - | - |
