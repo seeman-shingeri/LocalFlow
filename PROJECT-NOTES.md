@@ -296,8 +296,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **10** | **Memory Leak Prevention** | Automatic listener, timer, and subscription disposer registry | `src/lib/lifecycleManager.ts` | S | **Completed** | 5 passed | `9f9b88e` | Verified |
 | **11** | **Advanced RLS Security Audit** | Comprehensive tenant isolation & permission boundary verification | `src/lib/rlsAudit.ts`, `src/test/rlsAudit.test.ts` | S | **Completed** | 4 passed | `59424ba` | Verified |
 | **12** | **Secure API Validation** | Schema validation, type safety, and strict parameter enforcement | `src/lib/apiValidator.ts` | S | **Completed** | 4 passed | `25a282e` | Verified |
-| **13** | **Session Security Improvements** | Idle timeout detection, token expiry tracking, safe renewal | `src/lib/sessionSecurity.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
-| **14** | **Client Rate Limiting** | Token bucket rate limiter preventing API abuse and rapid clicks | `src/lib/rateLimiter.ts` | XS | Pending | - | - | - |
+| **13** | **Session Security Improvements** | Idle timeout detection, token expiry tracking, safe renewal | `src/lib/sessionSecurity.ts` | S | **Completed** | 4 passed | `de3c3cc` | Verified |
+| **14** | **Client Rate Limiting** | Token bucket rate limiter preventing API abuse and rapid clicks | `src/lib/rateLimiter.ts` | XS | **Completed** | 5 passed | `[hash]` | Verified |
 | **15** | **Immutable Audit Logs** | Structured event logger capturing critical mutations and actor context | `src/lib/auditTrail.ts` | S | Pending | - | - | - |
 | **16** | **Sensitive Data Protection** | PII masking and redaction for logs and error diagnostics | `src/lib/piiMasker.ts` | XS | Pending | - | - | - |
 | **17** | **Input Sanitization** | Multi-layer XSS, HTML entity encode, and injection prevention | `src/lib/securitySanitizer.ts` | XS | Pending | - | - | - |
