@@ -305,8 +305,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **19** | **Secure Error Responses** | Prevents internal database details and stack traces leaking to users | `src/lib/secureError.ts` | XS | **Completed** | 5 passed | `a0d0a66` | Verified |
 | **20** | **Dependency Vulnerability Checks** | Automated lockfile parser and vulnerable package version auditor | `src/lib/dependencyAuditor.ts` | S | **Completed** | 4 passed | `23570f1` | Verified |
 | **21** | **Global Error Boundary** | Top-level React error boundary with incident IDs & recovery UI | `src/components/common/GlobalErrorBoundary.tsx`, `src/App.tsx` | S | **Completed** | 3 passed | `d80478d` | Verified |
-| **22** | **Automatic Retry Logic** | Exponential backoff retry with jitter for transient failures | `src/lib/retryPolicy.ts` | XS | **Completed** | 5 passed | `[hash]` | Verified |
-| **23** | **Network Failure Recovery** | Offline mutation queue with automatic online sync flush | `src/lib/offlineQueue.ts` | S | Pending | - | - | - |
+| **22** | **Automatic Retry Logic** | Exponential backoff retry with jitter for transient failures | `src/lib/retryPolicy.ts` | XS | **Completed** | 5 passed | `a481618` | Verified |
+| **23** | **Network Failure Recovery** | Offline mutation queue with automatic online sync flush | `src/lib/offlineQueue.ts` | S | **Completed** | 4 passed | `[hash]` | Verified |
 | **24** | **Duplicate Request Prevention** | Stripe-style idempotency guard preventing duplicate transactions | `src/lib/idempotencyGuard.ts`, `src/services/paymentService.ts` | S | **Completed** | 4 passed | `4cd5524` | Verified |
 | **25** | **Database Transaction Safety** | Multi-step mutation rollback coordinator and compensation engine | `src/lib/transactionCoordinator.ts` | S | Pending | - | - | - |
 | **26** | **Form Data Preservation** | Auto-draft persistence in sessionStorage on typing/interruption | `src/lib/formDraftPreserver.ts` | XS | Pending | - | - | - |
