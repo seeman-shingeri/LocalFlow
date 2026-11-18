@@ -301,8 +301,8 @@ This backlog maps out all 50 enterprise-grade engineering improvements designed 
 | **15** | **Immutable Audit Logs** | Structured event logger capturing critical mutations and actor context | `src/lib/auditTrail.ts` | S | **Completed** | 3 passed | `d393aa5` | Verified |
 | **16** | **Sensitive Data Protection** | PII masking and redaction for logs and error diagnostics | `src/lib/piiMasker.ts` | XS | **Completed** | 5 passed | `9d62d1f` | Verified |
 | **17** | **Input Sanitization** | Multi-layer XSS, HTML entity encode, and injection prevention | `src/lib/securitySanitizer.ts` | XS | **Completed** | 6 passed | `cfdb3fb` | Verified |
-| **18** | **Permission Boundary Testing** | Automated cross-workspace unauthorized access detection suite | `src/test/permissionBoundary.test.ts` | S | **Completed** | 5 passed | `[hash]` | Verified |
-| **19** | **Secure Error Responses** | Prevents internal database details and stack traces leaking to users | `src/lib/secureError.ts` | XS | Pending | - | - | - |
+| **18** | **Permission Boundary Testing** | Automated cross-workspace unauthorized access detection suite | `src/test/permissionBoundary.test.ts` | S | **Completed** | 5 passed | `3016acc` | Verified |
+| **19** | **Secure Error Responses** | Prevents internal database details and stack traces leaking to users | `src/lib/secureError.ts` | XS | **Completed** | 5 passed | `[hash]` | Verified |
 | **20** | **Dependency Vulnerability Checks** | Automated lockfile parser and vulnerable package version auditor | `src/lib/dependencyAuditor.ts` | S | Pending | - | - | - |
 | **21** | **Global Error Boundary** | Top-level React error boundary with incident IDs & recovery UI | `src/components/common/GlobalErrorBoundary.tsx`, `src/App.tsx` | S | **Completed** | 3 passed | `d80478d` | Verified |
 | **22** | **Automatic Retry Logic** | Exponential backoff retry with jitter for transient failures | `src/lib/retryPolicy.ts` | XS | Pending | - | - | - |
