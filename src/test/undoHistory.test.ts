@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { UndoHistoryManager } from '@/lib/undoHistory';
 
 describe('Enterprise Undo/Redo Command History Manager (undoHistory)', () => {

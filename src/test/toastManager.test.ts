@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ToastManager } from '@/lib/toastManager';
 
 describe('Enterprise Nonintrusive Toast Queue Manager (toastManager)', () => {
